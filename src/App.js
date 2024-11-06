@@ -1,7 +1,10 @@
+import { DayCost } from "./Components/DayCost";
+import { DummyData } from "./Components/DummyData";
+
 function App() {
   return (
     <div>
-      hello world
+      <DummyData/>
     </div>
   );
 }
