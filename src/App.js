@@ -1,10 +1,11 @@
 import { DayCost } from "./Components/DayCost";
 import { DummyData } from "./Components/DummyData";
+import { TravelDetail } from "./travelSpecific/TravelDetail";
 
 function App() {
   return (
     <div>
-      <DummyData/>
+      <TravelDetail/>
     </div>
   );
 }
