@@ -131,9 +131,9 @@ const PictureCard=styled.div`
 export function TravelDetail(){
     return(
         <TravelDetailContainor>
-            <button className="material-symbols-outlined">
+            <div className="material-symbols-outlined">
                 arrow_back_ios
-            </button>
+            </div>
         
             <TravelInfoContainor>
                 <div className='date'>
