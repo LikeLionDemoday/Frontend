@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import React, { useState,useEffect,useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
 const pictureResults=[
     {name: '사진1'},
     {name: '사진2'},
@@ -28,10 +31,11 @@ const TravelDetailContainor =styled.div`
     flex-direction: column;
     align-items: center;
     background-color: whitesmoke;
+    position: relative;
 
    
         
-    .material-symbols-outlined{
+    .material-symbols-outlined.back-icon  {
         width:30px;
         height:20px;
         display: flex;
@@ -54,9 +58,23 @@ const TravelInfoContainor=styled.div`
     opacity:0.3;
     margin-top:10px;
 
+    .material-symbols-outlined.more-icon  {
+        width:30px;
+        height:20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-left: 340px;
+        font-size:20px;
+        color:black;
+        border: none;
+    }
+
     .date{
         width:200px;
         height:13px;
+        margin-top: 20px;
         background-color: blue;
     }
 
@@ -128,14 +146,56 @@ const PictureCard=styled.div`
     background-color: beige;
 `;
 
+const ModalContainer = styled.div`
+    position: absolute;
+    top: 160px;
+    right: 5px;
+    width: 120px;
+    background-color: white;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px 0;
+    display: ${(props) => (props.isOpen ? 'block' : 'none')};
+`;
+
+const ModalItem = styled.div`
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
 export function TravelDetail(){
+    const [isModalOpen, setModalOpen] = useState(false);
+    const modalRef = useRef(null);
+    const navigate=useNavigate();
+
+    const toggleModal = () => {
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleItemClick=(path)=>{
+        navigate(path);
+    }
+    
     return(
-        <TravelDetailContainor>
-            <div className="material-symbols-outlined">
+        <TravelDetailContainor onClick={closeModal}>
+            <div className="material-symbols-outlined back-icon">
                 arrow_back_ios
             </div>
         
-            <TravelInfoContainor>
+            <TravelInfoContainor onClick={(e) => e.stopPropagation()}>
+                <span class="material-symbols-outlined more-icon" onClick={toggleModal}>
+                     more_horiz
+                </span>
                 <div className='date'>
 
                 </div>
@@ -164,6 +224,12 @@ export function TravelDetail(){
                 ))}
                
             </PictureContainor>
+
+            <ModalContainer isOpen={isModalOpen} ref={modalRef}>
+                <ModalItem onClick={()=>handleItemClick("/travel/detail/edit")}>편집</ModalItem>
+                <ModalItem onClick={() => alert('삭제 기능')}>삭제</ModalItem>
+                <ModalItem onClick={() => alert('공유 기능')}>공유</ModalItem>
+            </ModalContainer>
         </TravelDetailContainor>
        
     );
