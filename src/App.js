@@ -25,7 +25,7 @@ export default App;
 const GlobalStyle = createGlobalStyle`
   ${reset}
   #root{
-    max-width: 390px;
+    max-width: 375px;
     height: var(--app-height, 100vh);
     margin: 0 auto;
     display: flex;
