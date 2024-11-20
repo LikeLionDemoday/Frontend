@@ -11,7 +11,7 @@ const EditContainor=styled.div`
 `
 
 const TitleAndBtn=styled.div`
-    width:375px;
+    width:331px;
     height:30px;
     display: flex;
     flex-direction: row;
@@ -64,13 +64,12 @@ const TitleAndBtn=styled.div`
 `
 
 const TravelInfoEdit=styled.div`
-    width:375px;
-    //height: 550px;
+    width:331px;
     margin-top: 60px;
     background-color: gray;
 
     .travelTitle{
-        width:375px;
+        width:331px;
         height:32px;
         display: flex;
         flex-direction: row;
@@ -82,14 +81,14 @@ const TravelInfoEdit=styled.div`
     }
     
     .travelDate{
-        width:375px;
+        width:331px;
         height:32px;
         margin-top: 38px;
         border-bottom: 1px solid #ddd;
     }
 
     .travelPlace{
-        width:375px;
+        width:331px;
         height:32px;
         margin-top: 38px;
         display: flex;
@@ -100,7 +99,7 @@ const TravelInfoEdit=styled.div`
     }
 
     .goalExp{
-        width:375px;
+        width:331px;
         height:52px;
         margin-top: 18px;
         display: flex;
@@ -252,10 +251,10 @@ const AddMemberButton = styled.div`
             justify-content: center;
             align-items: center;
             border-radius: 50px;
-            background-color: grey;
+            background-color: black;
             margin:0;
             .plusLogo{
-                color: red;
+                color: white;
                 margin-top: 13px;
             }
     }
@@ -285,9 +284,9 @@ export function TravelDetailEdit(){
         "최최최",
     ]);
 
-    const handleAddMember = () => {
-        setMembers([...members, `새 멤버 ${members.length + 1}`]);
-    };
+    // const handleAddMember = () => {
+    //     setMembers([...members, `새 멤버 ${members.length + 1}`]);
+    // };
 
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
@@ -301,7 +300,7 @@ export function TravelDetailEdit(){
                     arrow_back_ios
                 </div>
                 <div className='title'>
-                    <p>여행 기록 편집</p>
+                    <p>여행 정보 수정</p>
                 </div>
                 <div className='complete'>
                     <p>완료</p>
@@ -322,10 +321,10 @@ export function TravelDetailEdit(){
                     <p className='goalExpText'>목표금액</p>
                     <p className='goalExpNum'>600,000</p>
                 </div>
-                <div className='realExp'>
+                {/* <div className='realExp'>
                     <p className='realExpText'>지출금액</p>
                     <p className='realExpNum'>600,000</p>
-                </div>
+                </div> */}
 
                 <MembersSection>
                     {members.map((member, index) => (
