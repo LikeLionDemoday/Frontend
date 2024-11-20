@@ -157,6 +157,19 @@ const PictureContainor=styled.div`
     column-gap:8px; //세로간격
     row-gap:12px;  //가로간격
     background-color: aqua;
+
+    .nothingAlert{
+        width:120px;
+        color: var(--Grayscale-5, #7A7A7A);
+        font-family: Pretendard;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 18px */
+
+        margin-left: 114px;
+        margin-top: 80px;
+    }
 `;
 
 const PictureCard=styled.div`
@@ -250,11 +263,15 @@ export function TravelDetail(){
             </ExpContainor>
 
             <PictureContainor>
-                {pictureResults.map((picture,index) => (
+            {pictureResults.length > 0 ? (
+                pictureResults.map((picture, index) => (
                     <PictureCard key={index}>
                         <p>{picture.name}</p>
                     </PictureCard>
-                ))}
+                ))
+            ) : (
+                <div className='nothingAlert'>사진 기록이 없습니다</div>
+            )}
                
             </PictureContainor>
 
