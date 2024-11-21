@@ -9,19 +9,43 @@ import { createGlobalStyle } from "styled-components";
 
 import { DayCost } from "./Components/DayCost";
 import { DummyData } from "./Components/DummyData";
+import TravelCreate from "./Travel/TravelCreate";
+import TravelMain from "./Travel/TravelMain";
+import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { AnalysisExp } from "./expAdd/AnalysisExp";
 
-
 function App() {
+
+  useEffect(() => {
+    const handleResize = () => {
+      document.documentElement.style.setProperty(
+        "--app-height",
+        `${window.innerHeight}px`
+      );
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); 
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   return (
-    <Router>
-      <Routes>
-        <Route path='/travel/detail' element={<TravelDetail />} />
-        <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
-      </Routes>
-    </Router>
+    <>
+    <GlobalStyle />
+      <Router>
+        <Routes>
+          <Route path="/trip" element={<TravelCreate />} />
+          <Route path="/tripSearch" element={<TravelSearch />} />
+          <Route path="/tripMain" element={<TravelMain />} />
+          <Route path="/DummyData" element={<DummyData />} />
+          <Route path='/travel/detail' element={<TravelDetail />} />
+          <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 export default App;
