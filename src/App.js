@@ -7,14 +7,34 @@ import { createGlobalStyle } from "styled-components";
 
 import { DayCost } from "./Components/DayCost";
 import { DummyData } from "./Components/DummyData";
-
+import TravelCreate from "./Travel/TravelCreate";
+import TravelMain from "./Travel/TravelMain";
+import TravelSearch from "./Travel/TravelSearch";
 function App() {
+
+  useEffect(() => {
+    const handleResize = () => {
+      document.documentElement.style.setProperty(
+        "--app-height",
+        `${window.innerHeight}px`
+      );
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); 
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   return (
     <>
     <GlobalStyle />
       <Router>
         <Routes>
-          <DummyData/>
+          <Route path="/trip" element={<TravelCreate />} />
+          <Route path="/tripSearch" element={<TravelSearch />} />
+          <Route path="/tripMain" element={<TravelMain />} />
+          <Route path="/DummyData" element={<DummyData />} />
         </Routes>
       </Router>
     </>

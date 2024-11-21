@@ -1,5 +1,5 @@
 {
-  "name": "jsx-exam",
+  "name": "Frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,7 +21,7 @@
     "styled-reset": "^4.5.2",
     "url": "^0.11.4",
     "web-vitals": "^2.1.4",
-    "zustand": "^4.5.5"
+    "zustand": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
