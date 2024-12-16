@@ -2,9 +2,9 @@
 
 import React from "react";
 import { useEffect } from "react";
-//import { reset } from "styled-reset";
+import { reset } from "styled-reset";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-//import "./fonts/Pretendard.css";
+import "./fonts/Pretendard.css";
 import { createGlobalStyle } from "styled-components";
 
 import { DayCost } from "./Components/DayCost";
@@ -14,7 +14,7 @@ import TravelMain from "./Travel/TravelMain";
 import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
-import { AnalysisExp } from "./expAdd/AnalysisExp";
+import { ExpAdd } from "./expAdd/ExpAdd";
 
 function App() {
 
@@ -43,6 +43,7 @@ function App() {
           <Route path="/DummyData" element={<DummyData />} />
           <Route path='/travel/detail' element={<TravelDetail />} />
           <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
+          <Route path='/expAdd' element={<ExpAdd />} />
         </Routes>
       </Router>
     </>
@@ -50,19 +51,19 @@ function App() {
 }
 export default App;
 
-// const GlobalStyle = createGlobalStyle`
-//   ${reset}
-//   #root{
-//     max-width: 375px;
-//     height: var(--app-height, 100vh);
-//     margin: 0 auto;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     font-family: "Pretendard";
-//     padding: 20px 20px 0;
-//     background-color: #fff;
-//     border: 2px solid #f4f4f4;
-//   }
-// `
+const GlobalStyle = createGlobalStyle`
+  ${reset}
+  #root{
+    max-width: 375px;
+    height: var(--app-height, 100vh);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Pretendard";
+    padding: 20px 20px 0;
+    background-color: #fff;
+    border: 2px solid #f4f4f4;
+  }
+`
 
