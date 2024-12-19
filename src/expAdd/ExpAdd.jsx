@@ -1,6 +1,13 @@
 import styled from "styled-components";
 import { useState } from 'react';
 
+const persons = [
+    { id: 1, name: "구성원"},
+    { id: 2, name: "구성원"},
+    { id: 3, name: "구성원"},
+    { id: 4, name: "구성원"},
+    { id: 5, name: "이제원"}
+];
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -8,17 +15,21 @@ export function ExpAdd(){
     const [selectedPersons, setSelectedPersons] = useState([]);
     const [what, setWhat] = useState('');
     const [totalAmount, setTotalAmount] = useState('');
-    const [personalAmounts, setPersonalAmounts] = useState({});
-    const [errorMessage, setErrorMessage] = useState('');
+    const [personalAmounts, setPersonalAmounts] = useState([]);
+    let sum = 0;
+    let i = 0;
 
-
-    const persons = [
-        { id: 1, name: "구성원"},
-        { id: 2, name: "구성원"},
-        { id: 3, name: "구성원"},
-        { id: 4, name: "구성원"},
-        { id: 5, name: "이제원"}
-    ];
+    const calculateSum = () => {
+        for(i=0; i<personalAmounts.length; i++){
+            sum += personalAmounts[i];
+        }
+        return sum;
+      };
+    
+      // 금액이 일치하는지 확인
+      const isAmountValid = () => {
+        return calculateSum() === totalAmount;
+      };
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
@@ -26,6 +37,10 @@ export function ExpAdd(){
 
     const handleTotalAmountChange = (e) => {
         setTotalAmount(e.target.value);
+    }
+
+    const handlePersonalAmountChange = (e) => {
+        setPersonalAmounts(e.target.value);
     }
     
     // 카테고리 버튼 클릭 핸들러
@@ -107,7 +122,7 @@ export function ExpAdd(){
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
-                            <input type="text" placeholder="금액 입력" className="personalAmountInput"></input>
+                            <input type="text" placeholder="금액 입력" className="personalAmountInput" value={personalAmounts} onChange={handlePersonalAmountChange}></input>
                         </PersonItem>
                     ))}
                 </PeopleList>
@@ -117,6 +132,11 @@ export function ExpAdd(){
                 <TotalAmount>
                     <div className="label">총 금액</div>
                     <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
+                    <div>
+                        {isAmountValid() && totalAmount !== 0 && (
+                        <div style={{ color: 'red' }}>금액이 맞지 않습니다.</div>
+                        )}
+                    </div>
                 </TotalAmount>
             </PeopleContainor>
 
