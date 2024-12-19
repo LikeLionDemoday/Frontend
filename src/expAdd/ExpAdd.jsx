@@ -1,21 +1,6 @@
 import styled from "styled-components";
 import { useState } from 'react';
 
-const persons = [
-    { id: 1, name: "구성원"},
-    { id: 2, name: "구성원"},
-    { id: 3, name: "구성원"},
-    { id: 4, name: "구성원"},
-    { id: 5, name: "이제원"}
-];
-
-const persons = [
-    { id: 1, name: "구성원"},
-    { id: 2, name: "구성원"},
-    { id: 3, name: "구성원"},
-    { id: 4, name: "구성원"},
-    { id: 5, name: "이제원"}
-];
 
 const persons = [
     { id: 1, name: "구성원"},
