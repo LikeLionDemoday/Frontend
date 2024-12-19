@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { useState } from 'react';
 
+const persons = [
+    { id: 1, name: "구성원"},
+    { id: 2, name: "구성원"},
+    { id: 3, name: "구성원"},
+    { id: 4, name: "구성원"},
+    { id: 5, name: "이제원"}
+];
+
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -11,14 +19,6 @@ export function ExpAdd(){
     const [personalAmounts, setPersonalAmounts] = useState({});
     const [errorMessage, setErrorMessage] = useState('');
 
-
-    const persons = [
-        { id: 1, name: "구성원"},
-        { id: 2, name: "구성원"},
-        { id: 3, name: "구성원"},
-        { id: 4, name: "구성원"},
-        { id: 5, name: "이제원"}
-    ];
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
