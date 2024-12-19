@@ -14,7 +14,7 @@ import TravelMain from "./Travel/TravelMain";
 import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
-import { AnalysisExp } from "./expAdd/AnalysisExp";
+import { ExpAdd } from "./expAdd/ExpAdd";
 
 function App() {
 
@@ -43,6 +43,7 @@ function App() {
           <Route path="/DummyData" element={<DummyData />} />
           <Route path='/travel/detail' element={<TravelDetail />} />
           <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
+          <Route path='/expAdd' element={<ExpAdd />} />
         </Routes>
       </Router>
     </>
