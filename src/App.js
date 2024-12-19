@@ -15,6 +15,9 @@ import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { ExpAdd } from "./expAdd/ExpAdd";
+import  Expense  from "./Calculate/Expense";
+import  CalExpense  from "./Calculate/CalExpense";
+import  CalDetail  from "./Calculate/CalDetail";
 
 function App() {
 
@@ -44,6 +47,10 @@ function App() {
           <Route path='/travel/detail' element={<TravelDetail />} />
           <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
           <Route path='/expAdd' element={<ExpAdd />} />
+          <Route path='/expense' element={<Expense />} />
+          <Route path='/calculate/expense' element={<CalExpense />} />
+          <Route path='/calculate/detail' element={<CalDetail />} />
+
         </Routes>
       </Router>
     </>
