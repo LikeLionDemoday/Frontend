@@ -672,8 +672,8 @@ const ImageBox = styled.div`
 
 const AddPhotoButton = styled.div`
     position: relative;
-    width: 12px;
-    height: 12px;
+    width: 20px;
+    height: 20px;
     //padding-bottom: 100%;
     border: 2px solid #FF4D12;
     border-radius: 100%;

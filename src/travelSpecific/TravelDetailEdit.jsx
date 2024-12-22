@@ -60,6 +60,7 @@ const TitleAndBtn=styled.div`
         font-style: normal;
         font-weight: 400;
         line-height: 150%; /* 21px */
+        cursor: pointer;
     }
 `
 
@@ -380,6 +381,12 @@ export function TravelDetailEdit(){
         "최최최",
     ]);
 
+    const [tripName,setTripName]=useState("");
+    const [tripPlace,setTripPlace]=useState("");
+    const [tripStartDate,setTripStartDate]=useState("");
+    const [tripEndDate,setTripEndDate]=useState("");
+    const [tripGoalExp,setTripGoalExp]=useState("");
+
     // const handleAddMember = () => {
     //     setMembers([...members, `새 멤버 ${members.length + 1}`]);
     // };
@@ -388,6 +395,63 @@ export function TravelDetailEdit(){
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);
     };
+
+    const handleTripNameChange=(e)=>{
+        setTripName(e.target.value);
+    }
+    
+    const handleTripPlaceChange=(e)=>{
+        setTripPlace(e.target.value);
+    }
+    
+    const handleTripStartDateChange=(e)=>{
+        setTripStartDate(e.target.value);
+    }
+    
+    const handleTripEndDateChange=(e)=>{
+        setTripEndDate(e.target.value);
+    }
+
+    const handleTripGoalExpChange=(e)=>{
+        setTripGoalExp(e.target.value);
+    }
+
+    // const fetchTripData=async()=>{
+    //     try{
+    //         const response=await axios.get(`/trip/${tripId}`);
+    //         setTripName(response.data.name);
+    //         setTripPlace(response.data.place);
+    //         setTripStartDate(response.data.startDate);
+    //         setTripEndDate(response.data.endDate);
+    //         setTripGoalExp(response.data.goalExp);
+             
+    //         console.log(response);
+    //     }catch(error){
+    //         console.error("Error fetching travel data:", error);
+    //     }
+    // }
+    
+    // useEffect(()=>{
+    //     fetchTripData();
+    // },[]);
+
+    // const patchTripData=async()=>{
+    //     try{
+    //         const updatedTripData={
+    //             name: tripName,
+    //             place: tripPlace,
+    //             startDate: tripStartDate,
+    //             endDate: tripEndDate,
+    //             goalExp: tripGoalExp,
+    //         }
+    //         const response=await axios.patch(`/trip/${tripId}`, updatedTripData);
+    //         console.log(response);
+    //         alert("여행 정보 수정 완료");
+    //     }
+    //     catch(error){
+    //         console.error("Error patching travel data:", error);
+    //     }
+    // }
 
     return(
         <EditContainor>
@@ -398,31 +462,31 @@ export function TravelDetailEdit(){
                 <div className='title'>
                     <p>여행 정보 수정</p>
                 </div>
+                {/* <div className='complete' onClick={patchTripData}> 추가해야함*/}
                 <div className='complete'>
                     <p>완료</p>
                 </div>
             </TitleAndBtn>
 
+            {/* 여행 정보 수정 영역 */}
+            {/* value는 받아온 데이터로 넣어줘야함 -> 초기값 설정 기능 */}
             <TravelInfoEdit>
                 <div className='travelTitle'>
-                    <input type="text" className="travelNameInput" placeholder="여행 이름을 입력해주세요" required/>
+                    <input type="text" className="travelNameInput" value={tripName} placeholder="여행 이름을 입력해주세요" onChange={handleTripNameChange} required/>
                 </div>
                 <DateContainer>
-                    <DateInput type="date" required/>
-                    <DateInput type="date" required/>
+                    <DateInput type="date" value={tripStartDate} onChange={handleTripStartDateChange} required/>
+                    <DateInput type="date" value={tripEndDate} onChange={handleTripEndDateChange} required/>
                 </DateContainer>
                 <div className='travelPlace'>
-                    <input type="text" className="travelPlaceInput" placeholder="여행 장소를 입력해주세요" required/>
+                    <input type="text" className="travelPlaceInput" value={tripPlace} placeholder="여행 장소를 입력해주세요" onChange={handleTripPlaceChange} required/>
                 </div>
                 <div className='goalExp'>
                     <p className='goalExpText'>목표금액</p>
-                    <input type="text" className="goalExpInput" placeholder="목표금액을 입력해주세요" required/>
+                    <input type="text" className="goalExpInput" value={tripGoalExp} placeholder="목표금액을 입력해주세요" onChange={handleTripGoalExpChange} required/>
                 </div>
-                {/* <div className='realExp'>
-                    <p className='realExpText'>지출금액</p>
-                    <p className='realExpNum'>600,000</p>
-                </div> */}
 
+                {/* fetchTripData로 받아온 인원들 아래에 넣어야함 */}
                 <MembersSection>
                     {members.map((member, index) => (
                         <MemberItem key={index}>

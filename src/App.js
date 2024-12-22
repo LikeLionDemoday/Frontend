@@ -15,6 +15,8 @@ import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { ExpAdd } from "./expAdd/ExpAdd";
+import { Kakaologin } from "./Login/Kakaologin";
+import { Redirect } from "./Login/Redirect";
 
 function App() {
 
@@ -44,6 +46,8 @@ function App() {
           <Route path='/travel/detail' element={<TravelDetail />} />
           <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
           <Route path='/expAdd' element={<ExpAdd />} />
+          <Route path='/login' element={<Kakaologin />} />
+          <Route path='/auth/kakao' element={<Redirect/>}/>
         </Routes>
       </Router>
     </>
