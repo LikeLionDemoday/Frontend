@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="button">
+<mask id="mask0_637_2782" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" transform="matrix(-1 0 0 1 24 0)" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_637_2782)">
+<path id="chevron_backward" d="M18.7071 17.5858L24 12.2929L18.7071 7L18.0142 7.69289L22.6142 12.2929L18.0142 16.8929L18.7071 17.5858Z" fill="#7A7A7A"/>
+</g>
+</g>
+</svg>

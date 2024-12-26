@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { useState } from 'react';
 
+
+const persons = [
+    { id: 1, name: "구성원"},
+    { id: 2, name: "구성원"},
+    { id: 3, name: "구성원"},
+    { id: 4, name: "구성원"},
+    { id: 5, name: "이제원"}
+];
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -12,20 +20,16 @@ export function ExpAdd(){
     const [errorMessage, setErrorMessage] = useState('');
 
 
-    const persons = [
-        { id: 1, name: "구성원"},
-        { id: 2, name: "구성원"},
-        { id: 3, name: "구성원"},
-        { id: 4, name: "구성원"},
-        { id: 5, name: "이제원"}
-    ];
-
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
     }
 
     const handleTotalAmountChange = (e) => {
         setTotalAmount(e.target.value);
+    }
+
+    const handlePersonalAmountChange = (e) => {
+        setPersonalAmounts(e.target.value);
     }
     
     // 카테고리 버튼 클릭 핸들러
@@ -47,6 +51,14 @@ export function ExpAdd(){
             }
         });
     };
+
+    //에러가 나서 임의로 함수 추가했어요!!!!
+    // 금액 유효성 검사 함수
+    const isAmountValid = () => {
+      const personalAmountSum = Object.values(personalAmounts).reduce((acc, amount) => acc + Number(amount || 0), 0);
+      return personalAmountSum === Number(totalAmount || 0);
+  };
+
 
     return(
         <ExpAddContainor>
@@ -107,7 +119,7 @@ export function ExpAdd(){
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
-                            <input type="text" placeholder="금액 입력" className="personalAmountInput"></input>
+                            <input type="text" placeholder="금액 입력" className="personalAmountInput" value={personalAmounts} onChange={handlePersonalAmountChange}></input>
                         </PersonItem>
                     ))}
                 </PeopleList>
@@ -117,6 +129,11 @@ export function ExpAdd(){
                 <TotalAmount>
                     <div className="label">총 금액</div>
                     <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
+                    <div>
+                    {isAmountValid() && totalAmount !== 0 && (
+                    <div style={{ color: 'red' }}>금액이 맞지 않습니다.</div>
+                    )}
+                    </div>
                 </TotalAmount>
             </PeopleContainor>
 

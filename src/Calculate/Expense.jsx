@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import backButtonIcon from "../assets/backbutton.svg";
+import calButtonIcon from "../assets/calbutton.svg";
+import { useNavigate } from "react-router-dom";
+import BalanceSummary from "../Components/BalanceSummary"; 
 
-// 전체 컨테이너
+
 const ExpenseContainer = styled.div`
-  padding: 20px;
+  width: 100%;
+  max-width: 375px;
+  margin: 0 auto;
+  padding: 10px;
   background-color: #ffffff;
   box-sizing: border-box;
   display: flex;
@@ -13,9 +19,14 @@ const ExpenseContainer = styled.div`
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 20px;
+`;
+
+const BackButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
 `;
 
 const BackButton = styled.img`
@@ -24,56 +35,37 @@ const BackButton = styled.img`
   cursor: pointer;
 `;
 
-const Title = styled.h2`
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const BalanceSection = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const BalanceAmount = styled.p`
-  font-size: 18px;
-  color: #666;
-`;
-
-const BalanceNumber = styled.h1`
-  font-size: 32px;
-  font-weight: bold;
-`;
-
-const ProgressBarContainer = styled.div`
-  background-color: #e0e0e0;
-  height: 10px;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 10px 0;
-`;
-
-const ProgressBar = styled.div`
-  background-color: ${(props) => props.color || "#4caf50"};
-  height: 100%;
-  width: ${(props) => props.width || "0%"};
-`;
-
-const ExpenseItemsContainer = styled.div`
-  margin: 20px 0;
-`;
-
-const ExpenseItem = styled.div`
+const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
-const CategoryColor = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: ${(props) => props.color};
+const Title = styled.h2`
+  font-size: 18px;
+  font-weight: bold;
+  color: #474747;
+`;
+
+const SettleButton = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color: #888;
+  font-size: 17px;
+  font-weight: normal;
+  cursor: pointer;
+`;
+
+const ButtonText = styled.span`
+  font-size: 17px;
+  color: #888;
+`;
+
+const ButtonIcon = styled.img`
+  width: 30px;
+  height: 30px;
 `;
 
 const DailyExpenses = styled.div`
@@ -114,49 +106,49 @@ const ExpenseListItem = styled.div`
 
 const Expense = () => {
   const [activeTab, setActiveTab] = useState("전체");
+  const navigate = useNavigate();
 
+  const handleBackClick = () => {
+    navigate("/main");
+  };
+
+  const handleSettleClick = () => {
+    navigate("/calculate/detail"); 
+  };
+
+  // 초기 설정 금액 및 카테고리 데이터
+  const initialAmount = 1000000; // 초기 설정 금액
   const categories = [
-    { name: "숙소", amount: 40000, color: "#ff6f61" },
-    { name: "교통", amount: 40000, color: "#ffa600" },
-    { name: "식사", amount: 40000, color: "#bc5090" },
-    { name: "활동", amount: 40000, color: "#58508d" },
-    { name: "기타", amount: 40000, color: "#003f5c" },
-    { name: "잔액", amount: 1000000, color: "#dd5182" },
+    { name: "숙소", amount: 40000, color: "#d9d9d9" },
+    { name: "교통", amount: 40000, color: "#c0c0c0" },
+    { name: "식사", amount: 40000, color: "#999999" },
+    { name: "활동", amount: 40000, color: "#666666" },
+    { name: "기타", amount: 40000, color: "#333333" },
   ];
 
   const days = ["전체", "24일", "25일", "26일", "27일", "28일"];
-
   const expenses = Array(10).fill({ name: "항목명", amount: 40000 });
 
   return (
     <ExpenseContainer>
+      {/* 헤더 영역 */}
       <Header>
-        <BackButton src={backButtonIcon} alt="뒤로가기" />
-        <Title>전체 지출</Title>
-        <button>정산하기</button>
+        <BackButtonWrapper>
+          <BackButton src={backButtonIcon} alt="뒤로가기" onClick={handleBackClick} />
+        </BackButtonWrapper>
+        <TitleSection>
+          <Title>전체 지출</Title>
+          <SettleButton onClick={handleSettleClick}>
+            <ButtonText>정산하기</ButtonText>
+            <ButtonIcon src={calButtonIcon} alt="정산하기 화살표" />
+          </SettleButton>
+        </TitleSection>
       </Header>
 
-      <BalanceSection>
-        <BalanceAmount>잔액</BalanceAmount>
-        <BalanceNumber>130,000 원</BalanceNumber>
-        <ProgressBarContainer>
-          <ProgressBar color="#ff6f61" width="20%" />
-        </ProgressBarContainer>
-        <p>(숙소 + 교통비) (총 지출액)</p>
-      </BalanceSection>
+      {/* BalanceSummary 컴포넌트 */}
+      <BalanceSummary initialAmount={initialAmount} categories={categories} />
 
-      <ExpenseItemsContainer>
-        {categories.map((category, index) => (
-          <ExpenseItem key={index}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <CategoryColor color={category.color} />
-              <span>{category.name}</span>
-            </div>
-            <span>{category.amount.toLocaleString()} 원</span>
-          </ExpenseItem>
-        ))}
-      </ExpenseItemsContainer>
-
+      {/* DailyExpenses (기존 코드 유지) */}
       <DailyExpenses>
         <h3>일자별 지출</h3>
         <TabsContainer>

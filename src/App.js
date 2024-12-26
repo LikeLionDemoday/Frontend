@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { useEffect } from "react";
 import { reset } from "styled-reset";
@@ -15,12 +13,12 @@ import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { ExpAdd } from "./expAdd/ExpAdd";
-import  Expense  from "./Calculate/Expense";
-import  CalExpense  from "./Calculate/CalExpense";
-import  CalDetail  from "./Calculate/CalDetail";
+import Expense from "./Calculate/Expense";
+import CalExpense from "./Calculate/CalExpense";
+import CalDetail from "./Calculate/CalDetail";
+import  Main      from    "./Mainpage" 
 
 function App() {
-
   useEffect(() => {
     const handleResize = () => {
       document.documentElement.style.setProperty(
@@ -30,37 +28,38 @@ function App() {
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); 
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   return (
     <>
-    <GlobalStyle />
+      <GlobalStyle />
       <Router>
         <Routes>
           <Route path="/trip" element={<TravelCreate />} />
           <Route path="/tripSearch" element={<TravelSearch />} />
           <Route path="/tripMain" element={<TravelMain />} />
           <Route path="/DummyData" element={<DummyData />} />
-          <Route path='/travel/detail' element={<TravelDetail />} />
-          <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
-          <Route path='/expAdd' element={<ExpAdd />} />
-          <Route path='/expense' element={<Expense />} />
-          <Route path='/calculate/expense' element={<CalExpense />} />
-          <Route path='/calculate/detail' element={<CalDetail />} />
-
+          <Route path="/travel/detail" element={<TravelDetail />} />
+          <Route path="/travel/detail/edit" element={<TravelDetailEdit />} />
+          <Route path="/expAdd" element={<ExpAdd />} />
+          <Route path="/expense" element={<Expense />} />
+          <Route path="/calculate/expense" element={<CalExpense />} />
+          <Route path="/calculate/detail" element={<CalDetail />} />
+          <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
         </Routes>
       </Router>
     </>
   );
 }
+
 export default App;
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
-  #root{
+  #root {
     max-width: 375px;
     height: var(--app-height, 100vh);
     margin: 0 auto;
@@ -72,5 +71,4 @@ const GlobalStyle = createGlobalStyle`
     background-color: #fff;
     border: 2px solid #f4f4f4;
   }
-`
-
+`;
