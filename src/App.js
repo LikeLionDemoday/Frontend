@@ -17,6 +17,8 @@ import Expense from "./Calculate/Expense";
 import CalExpense from "./Calculate/CalExpense";
 import CalDetail from "./Calculate/CalDetail";
 import  Main      from    "./Mainpage" 
+import { Kakaologin } from "./Login/Kakaologin";
+import { Redirect } from "./Login/Redirect";
 
 function App() {
   useEffect(() => {
@@ -49,6 +51,11 @@ function App() {
           <Route path="/calculate/expense" element={<CalExpense />} />
           <Route path="/calculate/detail" element={<CalDetail />} />
           <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
+          <Route path='/travel/detail' element={<TravelDetail />} />
+          <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
+          <Route path='/expAdd' element={<ExpAdd />} />
+          <Route path='/login' element={<Kakaologin />} />
+          <Route path='/auth/kakao' element={<Redirect/>}/>
         </Routes>
       </Router>
     </>
