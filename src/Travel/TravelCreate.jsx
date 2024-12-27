@@ -1,36 +1,103 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as BackwardIcon } from "../icons/backward.svg";
+import axiosInstance from "../api/axios";
+
+
+const newToken = localStorage.getItem("access_token");
+
 
 
 const TravelCreate = () => {
-    return (
-      <Container>
-        <Header>
-          <Button><BackwardIcon /></Button>
-          <Title>새 여행 생성</Title>
-          <CompleteButton>완료</CompleteButton>
-        </Header>
-        <Circle />
-        <Input placeholder="여행명을 입력해주세요." />
-        <DateContainer>
-          <DateInput type="date" />
-          <DateInput type="date" />
-        </DateContainer>
-        <Input placeholder="여행지를 입력해주세요." />
-        <Target>목표 금액</Target>
-        <Input type="number" placeholder="목표 금액을 설정해주세요." />
-      </Container>
-    );
+
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState({
+    tripName: "",
+    startDate: "",
+    endDate: "",
+    place: "",
+    budget: ""
+  });
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post('/trip', userData, {
+        headers: {
+          Authorization: `Bearer ${newToken}` // 실제 토큰으로 교체하세요
+        }
+      });
+
+      if (response.data.isSuccess) {
+        const { tripId } = response.data.data;
+        navigate('/trip/join', { state: { tripId } });
+      } else {
+        console.error('여행 생성 실패:', response.data.message);
+      }
+    } catch (error) {
+      console.error('네트워크 오류:', error);
+    }
   };
+
+  return (
+    <Container>
+      <Header>
+        <Button><BackwardIcon onClick={() => navigate("/tripMain")} /></Button>
+        <Title>여행 추가</Title>
+      </Header>
+      <InnerBox userData={userData} setUserData={setUserData} />
+    </Container>
+  );
+};
+
+export default TravelCreate;
+
+
+
+
+const InnerBox = ({ userData, setUserData }) => {
   
-  export default TravelCreate;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  return (
+    <CreateBox>
+        <Circle />
+        <Input name="tripName" placeholder="여행명을 입력해주세요." onChange={handleChange} />
+         <DateContainer>  
+          <DateInput
+            name="startDate"
+            type="date"
+            onChange={handleChange}
+            value={userData.startDate}
+          />
+          <DateInput
+            name="endDate"
+            type="date"
+            onChange={handleChange}
+            value={userData.endDate}
+          />
+        </DateContainer>
+      <Input name="place" placeholder="여행지를 입력해주세요." onChange={handleChange} />
+      <Target>목표 금액</Target>
+      <Input name="budget" type="number" placeholder="목표 금액을 설정해주세요." onChange={handleChange} />
+     {/* <SubmitButton/> */}
+    </CreateBox>
+  )
+}
+
+
+
   const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 331px;
   margin-top: 48px;
 `;
 
@@ -43,6 +110,20 @@ const Header = styled.div`
   position: relative;
 `;
 
+
+const CreateBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 610px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: #FFF;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.00);
+`
+
+
 const Button = styled.button`
   background: none;
   border: none;
@@ -53,7 +134,8 @@ const Button = styled.button`
   top: 0;
 `;
 
-const CompleteButton = styled.button`
+
+const SubmitButton = styled.button`
   background: none;
   border: none;
   font-size: 16px;
@@ -61,8 +143,6 @@ const CompleteButton = styled.button`
   color: var(--Grayscale-9, #141414);
   font-weight: 600;
   top: 0;
-  position: absolute;
-  right: 0;
 `;
 
 const Title = styled.h1`
@@ -82,12 +162,12 @@ const Circle = styled.div`
   height: 207px;
   border-radius: 50%;
   background-color: #ddd;
-  margin-bottom: 64px;
+  margin-bottom: 40px;
 `;
 
 const Input = styled.input`
-  width: 93%;
-  padding: 10px;
+  width: 248px;
+  padding: 10px 0;
   margin-bottom: 20px;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -106,8 +186,8 @@ const DateContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin-bottom: 20px;
+  width: 248px;
+  margin-bottom: 10px;
   position: relative;
 
   &::before {
@@ -116,18 +196,28 @@ const DateContainer = styled.div`
     left: 50%;
     transform: translateX(-50%);
     color: #aaa;
-    margin-bottom: 10px;
+    //margin-bottom: 10px;
   }
 `;
 
 
-const DateInput = styled(Input)`
-  width: 40%;
-text-align: center;
-  border-bottom: 1px solid #ccc;
+
+const DateInput = styled.input`
+  width: 108px;
+  padding: 3px;
+  text-align: center;
   background: none;
   outline: none;
   color: #333;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  color: var(--Grayscale-3, #ADADAD);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 200%;
+  letter-spacing: 0.12px;
 `;
 
 const Target = styled.div`
@@ -137,5 +227,10 @@ const Target = styled.div`
     font-style: normal;
     font-weight: 600;
     line-height: 150%;
-    margin-top: 18px;
+    margin-top: 10px;
 `;
+
+// const DateWrapper = styled.div`
+//   position: relative;
+//   width: 40%;
+// `;
