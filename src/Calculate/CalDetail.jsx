@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import styled from "styled-components";
 import TransactionCard from "../Components/TransactionCard";
 
 const CalDetail = () => {
-  const [isToggleOn, setIsToggleOn] = useState(false);
+  const [isToggleOn, setIsToggleOn] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate(); // useNavigate 초기화
 
   const transactions = [
     { from: "나", to: "김OO", amount: -9000 },
@@ -14,10 +17,14 @@ const CalDetail = () => {
     setIsToggleOn(!isToggleOn);
   };
 
+  const handleCardClick = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <Container>
       <Header>
-        <BackButton>←</BackButton>
+        <BackButton onClick={() => navigate("/expense")}>←</BackButton> {/* 클릭 시 /expense로 이동 */}
         <Title>정산 내역</Title>
       </Header>
       <TransactionCard
@@ -26,7 +33,9 @@ const CalDetail = () => {
         date="2024.12.20 - 12.24"
         transactions={transactions}
         isToggleOn={isToggleOn}
+        isExpanded={isExpanded}
         onToggleChange={handleToggleChange}
+        onCardClick={handleCardClick}
       />
     </Container>
   );
