@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {useNavigate} from "react-router-dom"
 
 const MainContainer = styled.div`
   width: 100%;
@@ -11,6 +12,8 @@ const MainContainer = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
+
+
 
 const Header = styled.div`
   display: flex;
@@ -133,6 +136,9 @@ const SettlementItem = styled.div`
 
 
 const MainPage = () => {
+
+  const navigate = useNavigate();
+
   const recentExpenses = [
     { name: "항목명", amount: "40,000원" },
     { name: "항목명", amount: "40,000원" },
@@ -152,15 +158,16 @@ const MainPage = () => {
         <MenuButton>☰</MenuButton>
       </Header>
 
+
       {/* 여행 정보 */}
-      <TravelSection>
+      <TravelSection onClick={ () => {navigate(`/travel/detail/${tripId}`)}}>
         <TravelName>여행명</TravelName>
         <TravelBalance>잔액 600,000원</TravelBalance>
       </TravelSection>
 
       {/* 최근 지출 */}
       <RecentExpenses>
-        <SectionHeader>
+        <SectionHeader onClick={ () =>  {navigate(`/expense/${tripId}`)}}>
           <span>최근 지출</span>
           <span>›</span>
         </SectionHeader>
@@ -170,16 +177,16 @@ const MainPage = () => {
             <span>{expense.amount}</span>
           </ExpenseItem>
         ))}
-        <AddExpenseButton>+ 지출 추가</AddExpenseButton>
+        <AddExpenseButton onClick={ () =>  {navigate(`/expAdd/${tripId}`)}} >+ 지출 추가</AddExpenseButton>
       </RecentExpenses>
 
       {/* 여행 관리 */}
       <TravelManagement>
-        <SectionHeader>
+        <SectionHeader onClick={ () =>  {navigate(`/tripMain`)}}>
           <span>여행 관리</span>
           <span>›</span>
         </SectionHeader>
-        <ManagementButton>
+        <ManagementButton onClick={ () =>  {navigate(`/trip`)}}>
           <span>새로운 여행 계획</span>
           <span>+</span>
         </ManagementButton>
@@ -187,7 +194,10 @@ const MainPage = () => {
 
       {/* 지난 정산 */}
       <PastSettlement>
-        <SectionHeader>지난 정산</SectionHeader>
+        <SectionHeader  onClick={ () =>  {navigate(`/`)}}> {/*전체 정산내역 출력 페이지 연결} */}
+          <span>지난 정산</span>
+          <span>›</span>
+        </SectionHeader>
         {pastSettlements.map((settlement, index) => (
           <SettlementItem key={index}>
             <span>{settlement.name}</span>

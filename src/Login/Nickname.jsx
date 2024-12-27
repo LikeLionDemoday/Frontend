@@ -13,6 +13,8 @@ export function Nickname(){
     )
 }
 
+// 완료하면 /main 으로 navigate
+
 const NicknameContainer=styled.div`
     width: 100%;
     height: 700px;

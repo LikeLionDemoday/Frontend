@@ -109,11 +109,7 @@ const Expense = () => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate("/main");
-  };
-
-  const handleSettleClick = () => {
-    navigate("/calculate/detail"); 
+    navigate(`/travel/detail/${tripId}`);
   };
 
   // 초기 설정 금액 및 카테고리 데이터
@@ -138,9 +134,9 @@ const Expense = () => {
         </BackButtonWrapper>
         <TitleSection>
           <Title>전체 지출</Title>
-          <SettleButton onClick={handleSettleClick}>
+          <SettleButton  onClick={ () => {navigate(`/calculate/detail/${tripId}`)}}>
             <ButtonText>정산하기</ButtonText>
-            <ButtonIcon src={calButtonIcon} alt="정산하기 화살표" />
+            <ButtonIcon src={calButtonIcon} alt="정산하기 화살표"/>
           </SettleButton>
         </TitleSection>
       </Header>

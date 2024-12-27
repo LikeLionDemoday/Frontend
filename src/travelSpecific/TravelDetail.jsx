@@ -323,7 +323,7 @@ export function TravelDetail(){
             state: { selectedIndex: index } // 선택된 인덱스만 전달
         });
     };
-    
+
     // const fetchTripData=async()=>{
     //     try{
     //         const response=await axios.get(`/trip/${tripId}`);
@@ -351,7 +351,7 @@ export function TravelDetail(){
     return( //만약 다른곳 눌러서 모달창 없애고 싶으면 TravelDetailContainor onClick={closeModal} 추가 
         <TravelDetailContainor> 
             <div className="Btns">
-                <div className="material-symbols-outlined back-icon">
+                <div className="material-symbols-outlined back-icon" onClick={ () => {navigate(`/tripMain`)}}>
                     arrow_back_ios
                 </div>
 
@@ -416,7 +416,7 @@ export function TravelDetail(){
             <ModalContainer isOpen={isModalOpen} ref={modalRef}>
                 <ModalItem onClick={()=>handleItemClick("/travel/detail/edit")}>편집</ModalItem>
                 <ModalItem onClick={() => setShowDeleteConfirm(true)}>삭제</ModalItem>
-                <ModalItem onClick={() => alert('공유 기능')}>공유</ModalItem>
+                <ModalItem onClick={ () => {navigate(`/trip/join/${tripId}`)}}>공유</ModalItem>
             </ModalContainer>
 
             {showDeleteConfirm && (
