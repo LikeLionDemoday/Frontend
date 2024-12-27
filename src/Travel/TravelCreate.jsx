@@ -86,7 +86,7 @@ const InnerBox = ({ userData, setUserData }) => {
       <Input name="place" placeholder="여행지를 입력해주세요." onChange={handleChange} />
       <Target>목표 금액</Target>
       <Input name="budget" type="number" placeholder="목표 금액을 설정해주세요." onChange={handleChange} />
-      <SubmitButton/>
+     {/* <SubmitButton/> */}
     </CreateBox>
   )
 }
