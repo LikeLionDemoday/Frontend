@@ -134,6 +134,17 @@ const Button = styled.button`
   top: 0;
 `;
 
+
+const SubmitButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--Grayscale-9, #141414);
+  font-weight: 600;
+  top: 0;
+`;
+
 const Title = styled.h1`
   color: var(--Grayscale-7, #474747);
   text-align: center;

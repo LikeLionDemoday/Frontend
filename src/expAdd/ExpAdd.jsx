@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
+import TravelCreate from "../Travel/TravelCreate";
 
 
 const persons = [
@@ -123,13 +124,13 @@ export function ExpAdd(){
     return(
         <ExpAddContainor>
             <TitleAndBtn>
-                <div className="material-symbols-outlined">
+                <div className="material-symbols-outlined" onClick={ () => {navigate(`/expense/${tripId}`)}}>
                     arrow_back_ios
                 </div>
                 <div className='title'>
                     <p>지출 추가</p>
                 </div>
-                <div className='complete'>
+                <div className='complete'>   {/* travel/detail 로 navigate} */}
                     <p>완료</p>
                 </div>
             </TitleAndBtn>
