@@ -382,6 +382,8 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+    const navigate = useNavigate();
+    const { tripId } = useParams();
 
     const [members, setMembers] = useState([
         "김김김",
