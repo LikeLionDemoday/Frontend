@@ -14,12 +14,13 @@ const persons = [
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [isToggled, setIsToggled] = useState(false);
-    const [selectedPersons, setSelectedPersons] = useState([]);
-    const [what, setWhat] = useState('');
-    const [totalAmount, setTotalAmount] = useState('');
-    const [personalAmounts, setPersonalAmounts] = useState({});
-    const [isValid, setIsValid] = useState(true);
+    const [isToggled, setIsToggled] = useState(false); //1/N 토글 스위치
+    const [selectedPerson, setSelectedPerson] = useState(null); //결제자 선택
+    const [what, setWhat] = useState(''); //항목명
+    const [totalAmount, setTotalAmount] = useState(''); //총 금액
+    const [personalAmounts, setPersonalAmounts] = useState({}); //개인 금액
+    const [isValid, setIsValid] = useState(true); //총 금액 일치 여부 검사
+    const [memo, setMemo] = useState(''); //메모
 
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
@@ -30,7 +31,17 @@ export function ExpAdd(){
     }
 
     const handleTotalAmountChange = (e) => {
-        setTotalAmount(e.target.value);
+        const newTotalAmount=e.target.value;
+        setTotalAmount(newTotalAmount);
+
+        if(isToggled && newTotalAmount){
+            const amount=Math.floor(Number(newTotalAmount)/persons.length);
+            const newAmounts={};
+            persons.forEach(person=>{
+                newAmounts[person.id]=amount;
+            });
+            setPersonalAmounts(newAmounts);
+        }
     }
 
     const calculateSum = () => {
@@ -39,9 +50,13 @@ export function ExpAdd(){
 
 
     const handlePersonalAmountChange = (personId, value) => {
-        setPersonalAmounts(prev => ({
-            ...prev,
-            [personId]: value
+        if (isToggled) {
+            setIsToggled(false);
+        }
+
+        setPersonalAmounts(prev => ({  //prev는 이전 상태 가져오는 역할
+            ...prev,  //prev를 실제로 펼침
+            [personId]: value  //거기에 값을 추가
         }));
     };
     
@@ -50,20 +65,26 @@ export function ExpAdd(){
         setSelectedCategory(category);
     };
 
-    // 토글 스위치 클릭 핸들러
+    // 1/N 토글 스위치 클릭 핸들러
     const handleToggleClick = () => {
-        setIsToggled(!isToggled);
+        setIsToggled(!isToggled); //여기서 바로 isToggled가 true가 되는건 아님
+
+        if(!isToggled && totalAmount){  //그래서 여기서는 !isToggled를 사용해야 함 그래야 true값이 될 수 있음
+            const amount=Math.floor(Number(totalAmount)/persons.length);
+            const newAmounts={};
+            persons.forEach(person=>{
+                newAmounts[person.id]=amount;
+            });
+            setPersonalAmounts(newAmounts);
+        }
+        else{
+            setPersonalAmounts({});
+        }
     };
 
 
     const handleCheckboxClick = (personId) => {
-        setSelectedPersons(prev => {
-            if (prev.includes(personId)) {
-                return prev.filter(id => id !== personId);
-            } else {
-                return [...prev, personId];
-            }
-        });
+        setSelectedPerson(personId);
     };
 
     const handleImageUpload = (event) => {
@@ -76,11 +97,29 @@ export function ExpAdd(){
         setSelectedImages(prev => prev.filter((_, i) => i !== index));
     };
 
+    const checkValid = () => {
+    
+        // 토글이 켜져있을 때(1/N 상태)는 금액 검증을 건너뜀
+        if (isToggled){
+            setIsValid(true);
+        } 
+    
+        // 토글이 꺼져있을 때만 금액 검증
+        else{
+            const sum = calculateSum();
+            const total = Number(totalAmount) || 0;
+            setIsValid(sum === total && total !== 0);
+        }
+    };
+
+    const handleMemoChange = (e) => {
+        setMemo(e.target.value);
+    };
+
     useEffect(() => {
-        const sum = calculateSum();
-        const total = Number(totalAmount) || 0;
-        setIsValid(sum === total && total !== 0);
+        checkValid();
     }, [personalAmounts, totalAmount]);
+
 
     return(
         <ExpAddContainor>
@@ -134,10 +173,10 @@ export function ExpAdd(){
                         <PersonItem key={person.id}>
                             <div className="leftSection">
                                 <div 
-                                    className={`checkbox ${selectedPersons.includes(person.id) ? 'checked' : ''}`}
+                                    className={`checkbox ${selectedPerson===person.id ? 'checked' : ''}`}
                                     onClick={() => handleCheckboxClick(person.id)}
                                 >
-                                    {selectedPersons.includes(person.id) && <span>✓</span>}
+                                    {selectedPerson===person.id && <span>✓</span>}
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
@@ -157,7 +196,7 @@ export function ExpAdd(){
                 <TotalAmount>
                     <div className="firstRow">
                         <div className="label">총 금액</div>
-                        <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
+                        <div className="value" style={{color: isValid ? 'black' : 'red'}}>{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
                     </div>
                     <div className="errorMessage">{isValid ? '' : '금액이 맞지 않아요.'}</div>
                 </TotalAmount>
@@ -199,6 +238,13 @@ export function ExpAdd(){
                     </PhotoBox>
                 </PhotoPlus>
             </PhotoContainer>
+
+            <MemoContainor>
+                <p className="memoTitle">메모 추가하기</p>
+                <input type="text" className="memoInput" value={memo} placeholder="메모를 입력해주세요." maxLength="24" onChange={handleMemoChange}/>
+                <div className="memoline"></div>
+                <div className="explain">(최대 24자)</div>
+            </MemoContainor>
 
         </ExpAddContainor>
     );
@@ -560,7 +606,7 @@ const TotalAmount = styled.div`
     .firstRow{
         width: 331px;
         height: 20px;
-        background-color: blue;
+        //background-color: blue;
         display: flex;
         justify-content: space-between;
         
@@ -696,4 +742,59 @@ const AddPhotoButton = styled.div`
     }
 `;
 
+const MemoContainor=styled.div`
+    width: 290px;
+    height: 209px;
+    margin-top: 20px;
+    padding: 20px;
+    background: #FFF;
+    border-radius: 16px;
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .memoTitle{
+        color: var(--Grayscale-9, #141414);
+        font-family: Pretendard;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 27px */
+        margin-top:48px
+    }
+
+    .memoInput{
+        width: 250px;
+        height: 90px;
+        border: 1px solid #EEEEEE;
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 70px;
+        border: none;
+        outline: none;
+    }
+
+    .memoline{
+        width: 248px;
+        height: 1px;
+        margin-bottom: 10px;
+        background-color: grey;
+    }
+
+    .explain{
+        width: 100px;
+        height: 16px;
+        //margin-top: 10px;
+        margin-left: 155px;
+        color: var(--Grayscale-2, #C7C7C7);
+        text-align: right;
+        font-family: "Pretendard Variable";
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 15px */
+    }
+
+`
 

@@ -17,6 +17,9 @@ import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { ExpAdd } from "./expAdd/ExpAdd";
 import { Kakaologin } from "./Login/Kakaologin";
 import { Redirect } from "./Login/Redirect";
+import { TravelPictureLook } from "./travelSpecific/TravelPictureLook";
+import { MyPage } from "./mypage/MyPage";
+import { Nickname } from "./Login/Nickname";
 
 function App() {
 
@@ -44,10 +47,15 @@ function App() {
           <Route path="/tripMain" element={<TravelMain />} />
           <Route path="/DummyData" element={<DummyData />} />
           <Route path='/travel/detail' element={<TravelDetail />} />
+           {/* 여기 뒤에 /:tripId 추가해야함 */}
           <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
           <Route path='/expAdd' element={<ExpAdd />} />
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>
+          <Route path='/pictureLook' element={<TravelPictureLook/>}/>  
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
+          <Route path='/mypage' element={<MyPage/>}/>
+          <Route path='/nickname' element={<Nickname/>}/>
         </Routes>
       </Router>
     </>
