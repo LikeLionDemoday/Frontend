@@ -15,9 +15,8 @@ import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
 import { ExpAdd } from "./expAdd/ExpAdd";
 import Expense from "./Calculate/Expense";
-import CalExpense from "./Calculate/CalExpense";
 import CalDetail from "./Calculate/CalDetail";
-import  Main      from    "./Mainpage" 
+import  Main      from    "./Main/Mainpage" 
 import { Kakaologin } from "./Login/Kakaologin";
 import { Redirect } from "./Login/Redirect";
 import { TravelPictureLook } from "./travelSpecific/TravelPictureLook";
@@ -54,9 +53,17 @@ function App() {
 
           <Route path="/travel/detail/edit" element={<TravelDetailEdit />} />
           <Route path="/expAdd" element={<ExpAdd />} />
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
           <Route path="/expense" element={<Expense />} />
-          <Route path="/calculate/expense" element={<CalExpense />} />
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
+
+          {/*<Route path="/calculate/expense" element={<CalExpense />} /> */}
+
           <Route path="/calculate/detail" element={<CalDetail />} />
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
+
+          {/*<Route path="/calculate/total" element={<CalTotal />} />*/}
+
           <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>

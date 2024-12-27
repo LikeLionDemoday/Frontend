@@ -5,6 +5,8 @@ import { ReactComponent as BackwardIcon } from "../icons/backward.svg";
 import { ReactComponent as SearchIcon } from "../icons/search.svg";
 
 const TravelSearch = () => {
+
+    const navigate = useNavigate();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
   
@@ -35,7 +37,7 @@ const TravelSearch = () => {
     return (
       <Container>
         <SearchBar>
-          <BackButton>
+          <BackButton onClick={ () => {navigate(`/tripMain`)}}>
             <BackwardIcon />
           </BackButton>
           <Input

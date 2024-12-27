@@ -112,7 +112,7 @@ const CostList = () => {
       <CostBox> 
         <ListHeader>
           <Title>정산 내역</Title>
-          <ButtonBox>
+          <ButtonBox onClick={ () => navigate("/calculate/total")}>
             <NextButton/>
           </ButtonBox>
         </ListHeader>
