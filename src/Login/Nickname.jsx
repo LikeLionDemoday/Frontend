@@ -9,13 +9,17 @@ export function Nickname(){
                 <p>시작하기</p>
             </div>
             <img className="dodutchPic" src={dodutchPic} alt="dodutch" />
+            <div className="text">
+                <p>두더치에서 사용할</p>
+                <p>닉네임을 설정해주세요!</p>
+            </div>
         </NicknameContainer>
     )
 }
 
 const NicknameContainer=styled.div`
     width: 100%;
-    height: 700px;
+    height: 812px;
     display: flex;
     flex-direction: column;
     //justify-content: center;
@@ -37,6 +41,24 @@ const NicknameContainer=styled.div`
         width: 270px;
         height: 270px;
         margin-top: 80px;
+    }
+
+    .text{
+        width:270px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #000;
+        text-align: center;
+        font-family: Pretendard;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 165%; /* 29.7px */
+        letter-spacing: -0.018px;
+        background-color: blue;
     }
 `;
 
