@@ -4,29 +4,41 @@ const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_PORT,
   headers: {
     "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem("access_token")}`
   },
 });
 
 // export const axiosInstance=axios.create({
-//   baseURL:"http://3.39.30.198"
+//   baseURL: process.env.REACT_APP_SERVER_PORT,
 // });
 
-axiosInstance.interceptors.request.use(
-  (config)=>{
-    const token=localStorage.getItem("access_token");
-    if(token){
-      config.headers.Authorization=`Bearer ${token}`;
-    }
-    return config;
-  },
-  (error)=>{
-    return Promise.reject(error);
-  }
-)
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("access_token");
+//     console.log("저장된 토큰:", token); // 토큰 값 확인
+    
+//     if(token) {
+//       config.headers = {
+//         "Content-Type": "application/json",
+//         "Authorization": `Bearer ${token}`
+//       };
+//       console.log("요청 헤더:", config.headers); // 실제 전송되는 헤더 확인
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
 axiosInstance.interceptors.response.use(
   (response)=>response,
   async(error)=>{
+
+    if (error.config.url === '/auth/signup') {
+      return Promise.reject(error);
+    }
+
     if(error.response.status===401 && !error.config._retry){ // 이 코드는 API 요청 시 토큰이 만료되었을 때(401 에러) 그리고 아직 재시도하지 않았을 때(_retry가 false일 때) 실행됩니다. 토큰을 재발급 받고 API를 재요청하기 위한 조건문입니다.
       try{
         const refreshToken=localStorage.getItem("refresh_token");
@@ -47,7 +59,7 @@ axiosInstance.interceptors.response.use(
       } catch(refreshTokenError){
          // refresh token도 만료된 경우
          localStorage.clear();
-         window.location.href = '/login'; //refresh token도 만료된 경우 로그인 페이지로 이동
+         //window.location.href = '/login'; //refresh token도 만료된 경우 로그인 페이지로 이동
          return Promise.reject(refreshTokenError); //api 호출부에서 catch로 넘어가게 하기 위한 장치
       }
     }

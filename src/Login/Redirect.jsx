@@ -16,7 +16,7 @@ export function Redirect(){
                         accessCode: access_code
                     })
                     
-                    console.log(response);
+                    console.log(response.data.data.existMember);
 
                     console.log(response.data.data.accessToken);
                     console.log(response.data.data.refreshToken);

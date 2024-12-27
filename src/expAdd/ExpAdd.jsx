@@ -12,6 +12,15 @@ const persons = [
     { id: 4, name: "구성원"},
     { id: 5, name: "이제원"}
 ];
+
+const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -25,6 +34,12 @@ export function ExpAdd(){
 
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
+    const [expDate, setExpDate] = useState(getCurrentDate()); //지출 날짜
+   
+
+    const handleExpDateChange = (e) => {
+        setExpDate(e.target.value);
+    }
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
@@ -92,9 +107,14 @@ export function ExpAdd(){
         const newImages = files.map(file => URL.createObjectURL(file));
         setSelectedImages(prev => [...prev, ...newImages]);
     };
-    
-    const handleDeleteImage = (index) => {
+
+
+     const handleDeleteImage = (index) => {
         setSelectedImages(prev => prev.filter((_, i) => i !== index));
+        // 파일 input 초기화
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     const checkValid = () => {
@@ -136,6 +156,10 @@ export function ExpAdd(){
             </TitleAndBtn>
 
             <SummaryContainor>
+                <ExpDate>
+                    <p>지출 날짜</p>
+                    <input type="date" className="expDateInput" value={expDate} onChange={handleExpDateChange} required/>
+                </ExpDate>
                 <ExpTitle>
                     <p>항목명</p>
                     <input type="text" className="expTitleInput" placeholder="어디에서 사용하셨나요?" value={what} onChange={handleWhatChange} required/>
@@ -314,13 +338,50 @@ const TitleAndBtn=styled.div`
 
 const SummaryContainor=styled.div`
     width:331px;
-    height:200px;
+    height:270px;
     display: flex;
     flex-direction: column;
     //justify-content: center;
     align-items: center;
     margin-top: 72px;
     background-color: red;
+`
+
+const ExpDate=styled.div`
+    width:331px;
+    height:32px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: yellow;
+
+
+    .expDateInput{
+        width:200px;
+        height:26px;
+        border: none;
+        background-color: aqua;
+        text-align: center;
+        color: var(--Grayscale-9, #141414);
+        text-align: right;
+        font-family: Pretendard;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 24px */
+        letter-spacing: 0.32px;
+        
+        &::-webkit-calendar-picker-indicator {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23333333' d='M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z'/%3E%3C/svg%3E");
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0.6;
+            margin-left: 10px;  // 아이콘 왼쪽 여백 추가
+        }
+
+    }
 `
 
 const ExpTitle=styled.div`
@@ -330,6 +391,7 @@ const ExpTitle=styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-top: 24px;
     background-color: blue;
     color: var(--Grayscale-7, #474747);
     font-family: Pretendard;
