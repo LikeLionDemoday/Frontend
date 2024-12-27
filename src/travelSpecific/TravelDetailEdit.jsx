@@ -45,9 +45,10 @@ const TitleAndBtn=styled.div`
         font-weight: 600;
         line-height: 150%; /* 21px */
         background-color: red;
+        margin-right: 100px;
     }
 
-    .complete{
+    /* .complete{
         width:40px;
         height:21px;
         display: flex;
@@ -61,7 +62,7 @@ const TitleAndBtn=styled.div`
         font-weight: 400;
         line-height: 150%; /* 21px */
         cursor: pointer;
-    }
+    } */
 `
 
 const DateContainer = styled.div`
@@ -279,7 +280,7 @@ const MemberItem = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 15px 0;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
 
@@ -338,6 +339,7 @@ const AddMemberButton = styled.div`
     cursor: pointer;
     margin-top: 30px;
     background-color: beige;
+    margin-bottom: 50px;
 
     .plusCircle{
             width: 14px;
@@ -369,8 +371,28 @@ const AddMemberButton = styled.div`
         font-weight: 500;
         line-height: 150%;
         opacity:0.5;
+        
     }
 `;
+
+const CompleteBtn=styled.div`
+    width:331px;
+    height:56px;
+    background-color: var(--main-red, #FF5234);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    
+    color: var(--Grayscale-White, #FFF);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 150%; /* 27px */
+`
 
 export function TravelDetailEdit(){
 
@@ -463,9 +485,9 @@ export function TravelDetailEdit(){
                     <p>여행 정보 수정</p>
                 </div>
                 {/* <div className='complete' onClick={patchTripData}> 추가해야함*/}
-                <div className='complete'>
+                {/* <div className='complete'>
                     <p>완료</p>
-                </div>
+                </div> */}
             </TitleAndBtn>
 
             {/* 여행 정보 수정 영역 */}
@@ -495,9 +517,9 @@ export function TravelDetailEdit(){
                                     <p>-</p>
                                 </div>
                             </span>
-                            <div className='avatar'>
+                            {/* <div className='avatar'>
 
-                            </div>
+                            </div> */}
                             <span className='memberName'>{member}</span>
                         </MemberItem>
                     ))}
@@ -509,6 +531,10 @@ export function TravelDetailEdit(){
                     </AddMemberButton>
                 </MembersSection>
             </TravelInfoEdit>
+
+            <CompleteBtn>
+                <p>완료</p>
+            </CompleteBtn>
         </EditContainor>
     );
 }
