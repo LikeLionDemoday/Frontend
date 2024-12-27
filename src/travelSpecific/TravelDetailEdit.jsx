@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditContainor=styled.div`
     width:375px;
@@ -400,10 +398,8 @@ export function TravelDetailEdit(){
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
 
-    // const handleAddMember = () => {
-    //     setMembers([...members, `새 멤버 ${members.length + 1}`]);
-    // };
-
+    const { tripId } = useParams();
+    const navigate = useNavigate();
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);

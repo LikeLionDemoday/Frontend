@@ -3,6 +3,8 @@ import React, { useState,useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/axios";
 import { useParams } from "react-router-dom";
+import BalanceSummaryJewon from "../Components/BalanceSummaryJewon.jsx"
+
 const pictureResults=[
     {name: '사진1'},
     {name: '사진2'},
@@ -17,10 +19,10 @@ const peopleResults = [
     { name: '김길동' },
     { name: '이이이' },
     { name: '박박박' },
-    { name: 'D' },
+    { name: '이이이' },
     { name: '최최최' },
     { name: '최최최' },
-    { name: 'D' },
+    { name: '오오오' },
 
     
 ];
@@ -74,7 +76,7 @@ const TravelDetailContainor =styled.div`
 const TravelInfoContainor=styled.div`
     width:331px;
     height:202px;
-    //background-color: #D9D9D9;
+    //background-color: blue;
     opacity:0.3;
     margin-top:10px;
     border-bottom: 1px solid var(--Grayscale-1, #E0E0E0);
@@ -148,28 +150,29 @@ const TripPic=styled.div`
     height: 90px;
     border-radius: 50%;
     margin-top: 20px;
-    margin-left: 60px;
+    margin-left: 50px;
     background-color: blue;
 `;
 
 const ExpContainor=styled.div`
     width:331px;
-    height:102px;
-    margin-top: 70px;
-    background-color: forestgreen;
+    height:200px;
+    margin-top: 33px;
+    border-bottom: 1px solid var(--Grayscale-1, #E0E0E0);
+    //background-color: forestgreen;
 `
 
 const PictureContainor=styled.div`
     width:331px;
     height:auto;
-    margin-top: 30px;
+    margin-top: 0px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     /* display: flex;
     flex-wrap: wrap; */
     column-gap:8px; //세로간격
     row-gap:12px;  //가로간격
-    background-color: aqua;
+    //background-color: aqua;
 
     .plusExp{
         width:77px;
@@ -392,15 +395,17 @@ export function TravelDetail(){
             
 
             <ExpContainor>
-                
+                <BalanceSummaryJewon 
+                  initialAmount={1000000}
+                  categories={[
+                    { name: "숙소", amount: 300000, color: "#4CAF50" },
+                    { name: "교통비", amount: 200000, color: "#2196F3" }
+                  ]}
+                />
             </ExpContainor>
 
             <PictureContainor>
-            {/* <div className="plusExp" onClick={()=>handleItemClick("/expAdd")}>
-                <div className="plusCircle">
-                    <p>+</p>
-                </div>
-            </div> */}
+    
             {pictureResults.length > 0 ? (
                 pictureResults.map((picture, index) => (
                     <PictureCard key={index} onClick={()=>handlePictureClick(index)}>
@@ -414,7 +419,7 @@ export function TravelDetail(){
             </PictureContainor>
 
             <ModalContainer isOpen={isModalOpen} ref={modalRef}>
-                <ModalItem onClick={()=>handleItemClick("/travel/detail/edit")}>편집</ModalItem>
+                <ModalItem onClick={()=>handleItemClick(`/travel/detail/edit/${tripId}`)}>편집</ModalItem>
                 <ModalItem onClick={() => setShowDeleteConfirm(true)}>삭제</ModalItem>
                 <ModalItem onClick={ () => {navigate(`/trip/join/${tripId}`)}}>공유</ModalItem>
             </ModalContainer>
