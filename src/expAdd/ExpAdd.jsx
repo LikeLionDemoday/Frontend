@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import TravelCreate from "../Travel/TravelCreate";
-
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const persons = [
     { id: 1, name: "구성원"},
@@ -12,7 +13,11 @@ const persons = [
     { id: 4, name: "구성원"},
     { id: 5, name: "이제원"}
 ];
+
 export function ExpAdd(){
+    const navigate = useNavigate();
+    const { tripId } = useParams();
+
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isToggled, setIsToggled] = useState(false); //1/N 토글 스위치
