@@ -14,7 +14,7 @@ const dummyImages = [
 
 
 export function TravelPictureLook(){
-    //const { tripId } = useParams();
+    const { tripId } = useParams();
     const initialIndex=2;
 
     const [tripData,setTripData]=useState([]);
@@ -46,7 +46,7 @@ export function TravelPictureLook(){
             <Title>
                 <div className="tripName">여행명</div>
                 <div className="cancelBtn">
-                   <div className="x">X</div>
+                   <div className="x" onClick={() => {navigate(`/travel/detail/${tripId}`)}}>X</div>  
                 </div>
             </Title>
 

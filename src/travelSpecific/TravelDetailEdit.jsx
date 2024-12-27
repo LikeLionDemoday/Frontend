@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditContainor=styled.div`
     width:375px;
@@ -381,6 +382,8 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+    const navigate = useNavigate();
+    const { tripId } = useParams();
 
     const [members, setMembers] = useState([
         "김김김",
@@ -395,10 +398,8 @@ export function TravelDetailEdit(){
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
 
-    // const handleAddMember = () => {
-    //     setMembers([...members, `새 멤버 ${members.length + 1}`]);
-    // };
-
+    const { tripId } = useParams();
+    const navigate = useNavigate();
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);
