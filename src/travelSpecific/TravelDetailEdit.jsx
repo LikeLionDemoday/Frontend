@@ -48,22 +48,8 @@ const TitleAndBtn=styled.div`
         margin-right: 100px;
     }
 
-    /* .complete{
-        width:40px;
-        height:21px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: aqua;
-        color: #000;
-        font-family: Pretendard;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 150%; /* 21px */
-        cursor: pointer;
-    } */
 `
+
 
 const DateContainer = styled.div`
   display: flex;
@@ -478,7 +464,7 @@ export function TravelDetailEdit(){
     return(
         <EditContainor>
             <TitleAndBtn>
-                <div className="material-symbols-outlined">
+                <div className="material-symbols-outlined" onClick={ () => {navigate(`/travel/detail/${tripId}`)}}>
                     arrow_back_ios
                 </div>
                 <div className='title'>
@@ -535,6 +521,8 @@ export function TravelDetailEdit(){
             <CompleteBtn>
                 <p>완료</p>
             </CompleteBtn>
+
+            {/* 성공 시에 `/travel/detail/${tripId}` 로 이동 */}
         </EditContainor>
     );
 }

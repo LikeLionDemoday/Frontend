@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import TransactionCard from "../Components/TransactionCard";
+import {useNavigate} from "react-router-dom"
 
 const CalDetail = () => {
+
+  const navigate = useNavigate();
+  
   const [isToggleOn, setIsToggleOn] = useState(false);
 
   const transactions = [
@@ -17,7 +21,7 @@ const CalDetail = () => {
   return (
     <Container>
       <Header>
-        <BackButton>←</BackButton>
+        <BackButton onClick={ () => {navigate(`/expense/${tripId}`)}}>←</BackButton>
         <Title>정산 내역</Title>
       </Header>
       <TransactionCard

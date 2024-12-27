@@ -26,7 +26,7 @@ export function Redirect(){
                     localStorage.setItem("refresh_token",response.data.data.refreshToken);
                     
                     if(response.data.data.existMember===true){
-                        navigate("/"); //로그인 성공 후 메인페이지로 이동
+                        navigate("/main"); //로그인 성공 후 메인페이지로 이동
                     }else{ //서비스 최초 로그인 시
                         navigate("/nickname"); //로그인 성공 후 닉네임 입력 페이지로 이동
                     }
