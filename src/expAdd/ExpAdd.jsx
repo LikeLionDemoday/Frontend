@@ -17,8 +17,7 @@ export function ExpAdd(){
     const [what, setWhat] = useState('');
     const [totalAmount, setTotalAmount] = useState('');
     const [personalAmounts, setPersonalAmounts] = useState({});
-    const [errorMessage, setErrorMessage] = useState('');
-
+    
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
@@ -111,7 +110,13 @@ export function ExpAdd(){
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
-                            <input type="text" placeholder="금액 입력" className="personalAmountInput" value={personalAmounts} onChange={handlePersonalAmountChange}></input>
+                            <input 
+                                type="text" 
+                                placeholder="금액 입력" 
+                                className="personalAmountInput" 
+                                value={personalAmounts[person.id] || ''} 
+                                onChange={(e) => handlePersonalAmountChange(person.id, e.target.value)}
+                            />
                         </PersonItem>
                     ))}
                 </PeopleList>
@@ -121,11 +126,6 @@ export function ExpAdd(){
                 <TotalAmount>
                     <div className="label">총 금액</div>
                     <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
-                    <div>
-                        {isAmountValid() && totalAmount !== 0 && (
-                        <div style={{ color: 'red' }}>금액이 맞지 않습니다.</div>
-                        )}
-                    </div>
                 </TotalAmount>
             </PeopleContainor>
 
