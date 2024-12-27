@@ -9,6 +9,7 @@ import { DayCost } from "./Components/DayCost";
 import { DummyData } from "./Components/DummyData";
 import TravelCreate from "./Travel/TravelCreate";
 import TravelMain from "./Travel/TravelMain";
+import TravelJoin from "./Travel/TravelJoin";
 import TravelSearch from "./Travel/TravelSearch";
 import { TravelDetail } from "./travelSpecific/TravelDetail";
 import { TravelDetailEdit } from "./travelSpecific/TravelDetailEdit";
@@ -19,6 +20,9 @@ import CalDetail from "./Calculate/CalDetail";
 import  Main      from    "./Mainpage" 
 import { Kakaologin } from "./Login/Kakaologin";
 import { Redirect } from "./Login/Redirect";
+import { TravelPictureLook } from "./travelSpecific/TravelPictureLook";
+import { MyPage } from "./mypage/MyPage";
+import { Nickname } from "./Login/Nickname";
 
 function App() {
   useEffect(() => {
@@ -41,21 +45,25 @@ function App() {
       <Router>
         <Routes>
           <Route path="/trip" element={<TravelCreate />} />
+          <Route path="/trip/join" element={<TravelJoin/>} />
           <Route path="/tripSearch" element={<TravelSearch />} />
           <Route path="/tripMain" element={<TravelMain />} />
           <Route path="/DummyData" element={<DummyData />} />
-          <Route path="/travel/detail" element={<TravelDetail />} />
+          <Route path='/travel/detail' element={<TravelDetail />} />
+           {/* 여기 뒤에 /:tripId 추가해야함 */}
+
           <Route path="/travel/detail/edit" element={<TravelDetailEdit />} />
           <Route path="/expAdd" element={<ExpAdd />} />
           <Route path="/expense" element={<Expense />} />
           <Route path="/calculate/expense" element={<CalExpense />} />
           <Route path="/calculate/detail" element={<CalDetail />} />
           <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
-          <Route path='/travel/detail' element={<TravelDetail />} />
-          <Route path='/travel/detail/edit' element={<TravelDetailEdit />} />
-          <Route path='/expAdd' element={<ExpAdd />} />
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>
+          <Route path='/pictureLook' element={<TravelPictureLook/>}/>  
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
+          <Route path='/mypage' element={<MyPage/>}/>
+          <Route path='/nickname' element={<Nickname/>}/>
         </Routes>
       </Router>
     </>
