@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
+
 const persons = [
     { id: 1, name: "구성원"},
     { id: 2, name: "구성원"},
@@ -10,7 +11,6 @@ const persons = [
     { id: 4, name: "구성원"},
     { id: 5, name: "이제원"}
 ];
-
 export function ExpAdd(){
     // 선택된 카테고리와 토글 상태를 관리하기 위한 state 추가
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -24,7 +24,6 @@ export function ExpAdd(){
 
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
-
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
