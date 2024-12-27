@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React, { useState,useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../api/axios";
 
 const pictureResults=[
     {name: '사진1'},
@@ -205,9 +206,10 @@ export function TravelDetail(){
     const [isModalOpen, setModalOpen] = useState(false);
     const modalRef = useRef(null);
     const navigate=useNavigate();
+    const [tripData,setTripData]=useState([]);
 
     const toggleModal = () => {
-        setModalOpen(true);
+        setModalOpen(!isModalOpen);
     };
 
     const closeModal = () => {
@@ -217,9 +219,23 @@ export function TravelDetail(){
     const handleItemClick=(path)=>{
         navigate(path);
     }
+
+    // const fetchTripData=async()=>{
+    //     try{
+    //         const response=await axios.get(`/trip/${tripId}`);
+    //         setTripData(response.data);
+    //         console.log(response);
+    //     }catch(error){
+    //         console.error("Error fetching travel data:", error);
+    //     }
+    // }
     
-    return(
-        <TravelDetailContainor onClick={closeModal}>
+    // useEffect(()=>{
+    //     fetchTripData();
+    // },[]);
+
+    return( //만약 다른곳 눌러서 모달창 없애고 싶으면 TravelDetailContainor onClick={closeModal} 추가 
+        <TravelDetailContainor> 
             <div className="Btns">
                 <div className="material-symbols-outlined back-icon">
                     arrow_back_ios
@@ -236,13 +252,13 @@ export function TravelDetail(){
             <TravelInfoContainor>
                
                 <div className='date'>
-
+                    {/* <p>{tripData.startDate} ~ {tripData.endDate}</p> */}
                 </div>
                 <div className='travelTitle'>
-
+                    {/* <p>{tripData.name}</p> */}
                 </div>
                 <div className='place'>
-
+                    {/* <p>{tripData.place}</p> */}
                 </div>
                 <PeopleContainor>
                     {peopleResults.map((person, index) => (

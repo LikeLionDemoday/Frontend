@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useRef } from 'react';
 
 
 const persons = [
@@ -17,7 +19,9 @@ export function ExpAdd(){
     const [what, setWhat] = useState('');
     const [totalAmount, setTotalAmount] = useState('');
     const [personalAmounts, setPersonalAmounts] = useState({});
-    
+    const [isValid, setIsValid] = useState(true);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const fileInputRef = useRef(null);
 
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
@@ -27,9 +31,17 @@ export function ExpAdd(){
         setTotalAmount(e.target.value);
     }
 
-    const handlePersonalAmountChange = (e) => {
-        setPersonalAmounts(e.target.value);
-    }
+    const calculateSum = () => {
+        return Object.values(personalAmounts).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
+    };
+
+
+    const handlePersonalAmountChange = (personId, value) => {
+        setPersonalAmounts(prev => ({
+            ...prev,
+            [personId]: value
+        }));
+    };
     
     // 카테고리 버튼 클릭 핸들러
     const handleCategoryClick = (category) => {
@@ -41,6 +53,7 @@ export function ExpAdd(){
         setIsToggled(!isToggled);
     };
 
+
     const handleCheckboxClick = (personId) => {
         setSelectedPersons(prev => {
             if (prev.includes(personId)) {
@@ -50,6 +63,22 @@ export function ExpAdd(){
             }
         });
     };
+
+    const handleImageUpload = (event) => {
+        const files = Array.from(event.target.files);
+        const newImages = files.map(file => URL.createObjectURL(file));
+        setSelectedImages(prev => [...prev, ...newImages]);
+    };
+    
+    const handleDeleteImage = (index) => {
+        setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    };
+
+    useEffect(() => {
+        const sum = calculateSum();
+        const total = Number(totalAmount) || 0;
+        setIsValid(sum === total && total !== 0);
+    }, [personalAmounts, totalAmount]);
 
     return(
         <ExpAddContainor>
@@ -124,11 +153,50 @@ export function ExpAdd(){
 
                 </Line>
                 <TotalAmount>
-                    <div className="label">총 금액</div>
-                    <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
+                    <div className="firstRow">
+                        <div className="label">총 금액</div>
+                        <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
+                    </div>
+                    <div className="errorMessage">{isValid ? '' : '금액이 맞지 않아요.'}</div>
                 </TotalAmount>
             </PeopleContainor>
 
+            <PhotoContainer>
+                <h3 className="photoTitle">사진 첨부하기</h3>
+                <PhotoPlus>
+                
+                    {selectedImages.length < 3 && (
+                        <AddPhotoButton onClick={() => fileInputRef.current.click()}>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageUpload}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                multiple
+                            />
+                        </AddPhotoButton>
+                    )}
+        
+                    <PhotoBox>
+                        {[0,1,2].map((index) => (
+                            <ImageBox key={index}>
+                                {selectedImages[index] ? (
+                                    <>
+                                        <img src={selectedImages[index]} alt={`uploaded-${index}`} />
+                                        <button 
+                                            className="delete-btn"
+                                            onClick={() => handleDeleteImage(index)}
+                                        >
+                                            -
+                                        </button>
+                                    </>
+                                ) : null}
+                            </ImageBox>
+                        ))}
+                    </PhotoBox>
+                </PhotoPlus>
+            </PhotoContainer>
 
         </ExpAddContainor>
     );
@@ -482,24 +550,147 @@ const Line=styled.div`
 `
 const TotalAmount = styled.div`
     display: flex;
-    justify-content: space-between;
-    padding: 20px;
+    flex-direction: column;
+    //padding: 20px;
     //border-top: 1px solid #EEEEEE;
-    margin-top: 7px;
-
-    .label {
+    margin-top: 20px;
+    
+    .firstRow{
+        width: 331px;
+        height: 20px;
+        background-color: blue;
+        display: flex;
+        justify-content: space-between;
+        
+        .label {
         font-size: 16px;
         font-weight: 600;
         margin-left: 14px;
         color: #333;
+        }
+
+        .value {
+            font-size: 16px;
+            font-weight: 600;
+            margin-right: 14px;
+            color: #FF4D12;
+        }
+
     }
 
-    .value {
-        font-size: 16px;
-        font-weight: 600;
-        margin-right: 14px;
-        color: #FF4D12;
+    
+    .errorMessage{
+        width:200px;
+        height:20px;
+        margin-top: 10px;
+        margin-left: 230px;
+        color: red;
+        font-size: 12px;
+        font-weight: 400;
+        //background-color: green;
     }
 `
 
+const PhotoContainer = styled.div`
+    width: 290px;
+    margin-top: 20px;
+    padding: 20px;
+    background: #FFF;
+    border-radius: 16px;
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+
+    .photoTitle {
+        font-size: 16px;
+        margin-left: 105px;
+        margin-bottom: 16px;
+    }
+`;
+
+const PhotoPlus = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+`;
+
+const PhotoBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 38px;
+    margin-left: 10px;
+    overflow-x: auto;  // 가로 스크롤 추가
+    padding-bottom: 10px;  // 스크롤바 여유 공간
+    grid-template-columns: repeat(3, 1fr);
+    
+    &::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 2px;
+    }
+`;
+
+const ImageBox = styled.div`
+    position: relative;
+    width: 76px;
+    height: 108px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    
+    img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+    }
+
+    
+    .delete-btn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+`;
+
+const AddPhotoButton = styled.div`
+    position: relative;
+    width: 20px;
+    height: 20px;
+    //padding-bottom: 100%;
+    border: 2px solid #FF4D12;
+    border-radius: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 135px;
+    background-color: #FF4D12;
+
+    &::before {
+        content: '+';
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        font-size: 24px;
+        color: white;
+        transform: translate(-50%, -54%);
+
+    }
+`;
 
