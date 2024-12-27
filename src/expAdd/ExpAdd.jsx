@@ -24,10 +24,6 @@ export function ExpAdd(){
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3416bdff9f71e44deca3ad8cf2ba628622860137
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
     }
@@ -36,11 +32,6 @@ export function ExpAdd(){
         setTotalAmount(e.target.value);
     }
 
-<<<<<<< HEAD
-    const handlePersonalAmountChange = (e) => {
-        setPersonalAmounts(e.target.value);
-    }
-=======
     const calculateSum = () => {
         return Object.values(personalAmounts).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
     };
@@ -52,7 +43,6 @@ export function ExpAdd(){
             [personId]: value
         }));
     };
->>>>>>> 3416bdff9f71e44deca3ad8cf2ba628622860137
     
     // 카테고리 버튼 클릭 핸들러
     const handleCategoryClick = (category) => {
@@ -75,15 +65,6 @@ export function ExpAdd(){
         });
     };
 
-<<<<<<< HEAD
-    //에러가 나서 임의로 함수 추가했어요!!!!
-    // 금액 유효성 검사 함수
-    const isAmountValid = () => {
-      const personalAmountSum = Object.values(personalAmounts).reduce((acc, amount) => acc + Number(amount || 0), 0);
-      return personalAmountSum === Number(totalAmount || 0);
-  };
-
-=======
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
         const newImages = files.map(file => URL.createObjectURL(file));
@@ -99,7 +80,6 @@ export function ExpAdd(){
         const total = Number(totalAmount) || 0;
         setIsValid(sum === total && total !== 0);
     }, [personalAmounts, totalAmount]);
->>>>>>> 3416bdff9f71e44deca3ad8cf2ba628622860137
 
     return(
         <ExpAddContainor>
@@ -160,9 +140,6 @@ export function ExpAdd(){
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
-<<<<<<< HEAD
-                            <input type="text" placeholder="금액 입력" className="personalAmountInput" value={personalAmounts} onChange={handlePersonalAmountChange}></input>
-=======
                             
                             <input 
                                 type="text" 
@@ -171,7 +148,6 @@ export function ExpAdd(){
                                 value={personalAmounts[person.id] || ''} 
                                 onChange={(e) => handlePersonalAmountChange(person.id, e.target.value)}
                             />
->>>>>>> 3416bdff9f71e44deca3ad8cf2ba628622860137
                         </PersonItem>
                     ))}
                 </PeopleList>
@@ -179,21 +155,11 @@ export function ExpAdd(){
 
                 </Line>
                 <TotalAmount>
-<<<<<<< HEAD
-                    <div className="label">총 금액</div>
-                    <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
-                    <div>
-                    {isAmountValid() && totalAmount !== 0 && (
-                    <div style={{ color: 'red' }}>금액이 맞지 않습니다.</div>
-                    )}
-                    </div>
-=======
                     <div className="firstRow">
                         <div className="label">총 금액</div>
                         <div className="value">{totalAmount ? `${Number(totalAmount).toLocaleString()}원` : ''}</div>
                     </div>
                     <div className="errorMessage">{isValid ? '' : '금액이 맞지 않아요.'}</div>
->>>>>>> 3416bdff9f71e44deca3ad8cf2ba628622860137
                 </TotalAmount>
             </PeopleContainor>
 
