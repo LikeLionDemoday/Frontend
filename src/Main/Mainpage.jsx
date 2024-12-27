@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom"
+import maindodutch from "../asset/maindodutch.png"
 
 const MainContainer = styled.div`
   width: 100%;
@@ -31,12 +32,19 @@ const MenuButton = styled.div`
   font-size: 24px;
   cursor: pointer;
 `;
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  img {
+    width: 250px;
+    height: auto;
+  }
+`;
 
 const TravelSection = styled.div`
-  background-color: #ffffff;
-  border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
 `;
 
@@ -158,6 +166,10 @@ const MainPage = () => {
         <MenuButton>☰</MenuButton>
       </Header>
 
+      {/* Main Image */}
+      <ImageContainer>
+        <img src={maindodutch} alt="두더지 이미지" />
+      </ImageContainer> 
 
       {/* 여행 정보 */}
       <TravelSection onClick={ () => {navigate(`/travel/detail/${tripId}`)}}>

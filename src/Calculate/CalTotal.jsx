@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom"; 
 import styled from "styled-components";
 import TransactionCard from "../Components/TransactionCard";
 
-const CalDetail = () => {
+const CalTotal = () => {
 
   const navigate = useNavigate();
   
@@ -42,7 +42,7 @@ const CalDetail = () => {
   );
 };
 
-export default CalDetail;
+export default CalTotal;
 
 const Container = styled.div`
   width: 100%;

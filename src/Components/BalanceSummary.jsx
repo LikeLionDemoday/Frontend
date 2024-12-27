@@ -2,10 +2,13 @@ import React from "react";
 import styled from "styled-components";
 
 const SummaryContainer = styled.div`
-  background-color: #ffffff;
-  border-radius: 10px;
+  width: 331px;
+  height: 176px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.1);
 `;
 
 const BalanceSection = styled.div`
@@ -13,8 +16,8 @@ const BalanceSection = styled.div`
 `;
 
 const BalanceTitle = styled.p`
-  font-size: 14px;
-  color: #666;
+  font-size: 12px;
+  color: #7a7a7a;
   margin-bottom: 8px;
 `;
 
@@ -30,13 +33,15 @@ const ProgressBarWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  width: 100%;
+  overflow: visible;
 `;
 
 const ProgressBarContainer = styled.div`
   display: flex;
   align-items: center;
-  height: 10px;
-  border-radius: 5px;
+  height: 24px;
+  border-radius: 12px;
   overflow: hidden;
   background-color: #e0e0e0;
   width: 100%;
@@ -58,8 +63,12 @@ const ProgressLabels = styled.div`
 `;
 
 const BalanceSummary = ({ initialAmount, categories }) => {
-  const totalUsed = categories.reduce((sum, category) => sum + category.amount, 0);
-  const balance = initialAmount - totalUsed;
+  const totalUsed = categories.reduce((sum, category) => sum + category.amount, 0); // 전체 사용 금액
+  const balance = initialAmount - totalUsed; // 잔액
+
+  const 숙소교통비 = categories
+    .filter((cat) => cat.name === "숙소" || cat.name === "교통")
+    .reduce((sum, cat) => sum + cat.amount, 0);
 
   const totalBarLength = 100; // 진행 바의 총 길이 (%)
   const segments = categories.map((category) => ({
@@ -71,7 +80,7 @@ const BalanceSummary = ({ initialAmount, categories }) => {
     segments.push({
       name: "잔액",
       amount: balance,
-      color: "#ff6f61",
+      color: "#FF5234",
       width: (balance / initialAmount) * totalBarLength,
     });
   }
@@ -80,9 +89,7 @@ const BalanceSummary = ({ initialAmount, categories }) => {
     <SummaryContainer>
       <BalanceSection>
         <BalanceTitle>잔액</BalanceTitle>
-        <BalanceAmount>
-          {balance.toLocaleString()} 원
-        </BalanceAmount>
+        <BalanceAmount>{balance.toLocaleString()} 원</BalanceAmount>
         <ProgressBarWrapper>
           <ProgressBarContainer>
             {segments.map((segment, index) => (
@@ -94,9 +101,9 @@ const BalanceSummary = ({ initialAmount, categories }) => {
             ))}
           </ProgressBarContainer>
           <ProgressLabels>
-            <span>(숙소 + 교통비)</span>
-            <span>(총 지출액)</span>
-            <span>(초기 설정 금액)</span>
+            <span>{숙소교통비.toLocaleString()} 원</span> {/* 숙소 + 교통비 */}
+            <span>{totalUsed.toLocaleString()} 원</span> {/* 총 지출액 */}
+            <span>{initialAmount.toLocaleString()} 원</span> {/* 초기 설정 금액 */}
           </ProgressLabels>
         </ProgressBarWrapper>
       </BalanceSection>
