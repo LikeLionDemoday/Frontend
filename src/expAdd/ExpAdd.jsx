@@ -20,14 +20,9 @@ export function ExpAdd(){
     const [totalAmount, setTotalAmount] = useState('');
     const [personalAmounts, setPersonalAmounts] = useState({});
     const [isValid, setIsValid] = useState(true);
-
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> sol
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
     }
@@ -144,7 +139,6 @@ export function ExpAdd(){
                                 </div>
                                 <span className="name">{person.name}</span>
                             </div>
-                            
                             <input 
                                 type="text" 
                                 placeholder="금액 입력" 
