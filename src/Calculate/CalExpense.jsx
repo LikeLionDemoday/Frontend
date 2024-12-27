@@ -2,48 +2,72 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import toggleIcon from "../assets/toggle.svg";
 
-const CalculateContainer = styled.div`
+// 전체 컨테이너
+const Container = styled.div`
   padding: 20px;
   background-color: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 `;
 
-const Title = styled.h2`
-  font-size: 24px;
+// 제목 스타일링
+const Title = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
   margin-bottom: 20px;
 `;
 
-const UserCard = styled.div`
-  background-color: #f8f8f8;
-  padding: 20px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
+// 정산 카드 스타일링
+const Card = styled.div`
   width: 343px;
+  height: ${(props) => (props.expanded ? "186px" : "111px")};
   flex-shrink: 0;
-  transition: max-height 0.3s ease;
-  overflow: hidden;
-  max-height: ${(props) => (props.expanded ? "500px" : "111px")};
-  position: relative;
+  background-color: ${(props) => (props.completed ? "var(--Grayscale-3, #ADADAD)" : "#F4F4F4")};
+  border: ${(props) => (props.completed ? "none" : "1px solid #e0e0e0")};
+  padding: 20px;
+  margin: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 `;
 
-const UserName = styled.span`
-  font-size: 14px;
-  color: #999;
-  margin-bottom: 10px;
-`;
-
-const AmountSection = styled.div`
+// 카드의 헤더 (이름, 날짜, 금액, 토글 아이콘)
+const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: ${(props) => (props.expanded ? "10px" : "0")};
 `;
 
-const AmountText = styled.div`
+// 이름과 날짜를 담는 컨테이너
+const NameAndDate = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+// 이름 스타일링
+const Name = styled.span`
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+// 날짜 스타일링
+const Date = styled.span`
+  font-size: 12px;
+  color: #888;
+`;
+
+// 금액 스타일링
+const Amount = styled.div`
   font-size: 18px;
   font-weight: bold;
+  color: #000;
 `;
 
+// 토글 아이콘 스타일링
 const ArrowIcon = styled.img`
   width: 24px;
   height: 24px;
@@ -51,72 +75,94 @@ const ArrowIcon = styled.img`
   transition: transform 0.3s ease;
 `;
 
-const DetailSection = styled.div`
-  background-color: #ffffff;
-  padding: 10px 20px;
+// 카드가 확장되었을 때의 상세 정보 컨테이너
+const Details = styled.div`
   margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid #e0e0e0;
   color: #666;
 `;
 
-const CalExpense = () => {
-  const [expandedUsers, setExpandedUsers] = useState([]);
+// 상세 정보 아이템 (보낸 사람, 받은 사람, 금액)
+const DetailItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #888;
+`;
 
-  const users = [
-    { name: "김김김", type: "보낼 금액", amount: 1234, details: [] },
-    { name: "이이이", type: "받을 금액", amount: 1234, details: [] },
+const CalDetail = () => {
+  // 현재 확장된 카드의 인덱스를 관리하는 상태
+  const [expandedCard, setExpandedCard] = useState(null);
+
+  // 카드 데이터 배열
+  const cards = [
+    { name: "김김김", date: "2024.12.25", type: "보낼 금액", amount: 1234, completed: false },
+    { name: "이이이", date: "2024.12.25", type: "받을 금액", amount: 1234, completed: false },
     {
       name: "박박박",
+      date: "2024.12.25",
       type: "보낼 금액",
       amount: 1234,
+      completed: false,
       details: [
         { from: "나", to: "박박박", amount: -2345 },
         { from: "박박박", to: "나", amount: 1111 },
       ],
     },
+    { name: "이이이", date: "2024.12.25", type: "받을 금액", amount: 1234, completed: true },
+    { name: "이이이", date: "2024.12.25", type: "받을 금액", amount: 1234, completed: true },
   ];
 
-  const toggleUserCard = (userName) => {
-    setExpandedUsers((prev) =>
-      prev.includes(userName)
-        ? prev.filter((name) => name !== userName)
-        : [...prev, userName]
-    );
+  // 카드 확장 상태를 토글하는 함수
+  const toggleCard = (index) => {
+    setExpandedCard(expandedCard === index ? null : index);
   };
 
   return (
-    <CalculateContainer>
-      <Title>정산하기</Title>
-      {users.map((user, index) => (
-        <div key={index}>
-          <UserCard
-            onClick={() => toggleUserCard(user.name)}
-            expanded={expandedUsers.includes(user.name)}
-          >
-            <UserName>{user.name}</UserName>
-            <AmountSection>
-              <AmountText>{user.type}</AmountText>
-              <AmountText>{user.amount.toLocaleString()}</AmountText>
-              <ArrowIcon
-                src={toggleIcon}
-                alt="toggle icon"
-                expanded={expandedUsers.includes(user.name)}
-              />
-            </AmountSection>
-          </UserCard>
-          {expandedUsers.includes(user.name) && user.details && (
-            <DetailSection>
-              {user.details.map((detail, i) => (
-                <div key={i}>
-                  {detail.from} -&gt; {detail.to} {detail.amount.toLocaleString()}
-                </div>
+    <Container>
+      {/* 제목 표시 */}
+      <Title>정산 내역</Title>
+      {/* 카드 리스트 렌더링 */}
+      {cards.map((card, index) => (
+        <Card
+          key={index}
+          completed={card.completed}
+          expanded={expandedCard === index}
+          onClick={() => toggleCard(index)}
+        >
+          <CardHeader expanded={expandedCard === index}>
+            <NameAndDate>
+              {/* 카드의 이름과 날짜 */}
+              <Name>{card.name}</Name>
+              <Date>{card.date}</Date>
+            </NameAndDate>
+            {/* 카드의 금액 */}
+            <Amount>{card.amount.toLocaleString()}</Amount>
+            {/* 토글 아이콘 */}
+            <ArrowIcon
+              src={toggleIcon}
+              alt="toggle icon"
+              expanded={expandedCard === index}
+            />
+          </CardHeader>
+          {/* 카드 확장 시 상세 정보 표시 */}
+          {expandedCard === index && card.details && (
+            <Details>
+              {card.details.map((detail, i) => (
+                <DetailItem key={i}>
+                  <span>{detail.from} -&gt; {detail.to}</span>
+                  <span>{detail.amount.toLocaleString()}</span>
+                </DetailItem>
               ))}
-            </DetailSection>
+            </Details>
           )}
-        </div>
+        </Card>
       ))}
-    </CalculateContainer>
+    </Container>
   );
 };
 
-export default CalExpense;
+export default CalDetail;
+

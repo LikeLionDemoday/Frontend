@@ -24,7 +24,10 @@ export function ExpAdd(){
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> sol
     const handleWhatChange = (e) => {
         setWhat(e.target.value);
     }
