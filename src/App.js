@@ -45,6 +45,8 @@ function App() {
         <Routes>
           <Route path="/trip" element={<TravelCreate />} />
           <Route path="/trip/join" element={<TravelJoin/>} />
+          {/* 여기 뒤에 /:tripId 추가해야함 */}
+          
           <Route path="/tripSearch" element={<TravelSearch />} />
           <Route path="/tripMain" element={<TravelMain />} />
           <Route path="/DummyData" element={<DummyData />} />

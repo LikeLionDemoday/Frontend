@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 
 const EditContainor=styled.div`
     width:375px;
@@ -381,6 +384,8 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+    const navigate = useNavigate();
+    const { tripId } = useParams();
 
     const [members, setMembers] = useState([
         "김김김",
