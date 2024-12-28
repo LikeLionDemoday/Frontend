@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axiosInstance from '../api/axios.js';
 
 
 const EditContainor=styled.div`
@@ -9,7 +10,7 @@ const EditContainor=styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: whitesmoke;
+    //background-color: whitesmoke;
 `
 
 const TitleAndBtn=styled.div`
@@ -20,7 +21,7 @@ const TitleAndBtn=styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top:100px;
-    background-color: blue;
+    //background-color: blue;
 
     .material-symbols-outlined{
         width:30px;
@@ -46,7 +47,7 @@ const TitleAndBtn=styled.div`
         font-style: normal;
         font-weight: 600;
         line-height: 150%; /* 21px */
-        background-color: red;
+        //background-color: red;
         margin-right: 100px;
     }
 
@@ -110,7 +111,11 @@ const DateInput = styled(Input)`
 const TravelInfoEdit=styled.div`
     width:331px;
     margin-top: 60px;
-    background-color: gray;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: white;
+    box-shadow: 0 2px 25px rgba(0, 0, 0, 0.1);
+    //background-color: gray;
 
     .travelTitle{
         width:331px;
@@ -120,7 +125,7 @@ const TravelInfoEdit=styled.div`
         justify-content: center;
         align-items: center;
         border-bottom: 1px solid #ddd;
-
+        margin-top: 10px;
         //background-color: aqua;
 
         .travelNameInput{
@@ -261,7 +266,7 @@ const MembersSection = styled.div`
     flex-direction: column;
     //align-items: center;
     margin-top:30px;
-    background-color: aqua;
+    //background-color: aqua;
 `;
 
 const MemberItem = styled.div`
@@ -269,8 +274,8 @@ const MemberItem = styled.div`
     display: flex;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
+    //border-bottom: 1px solid #ddd;
+    font-size: 25px;
 
     .remove {
         color: red;
@@ -278,13 +283,14 @@ const MemberItem = styled.div`
         margin-right: 10px;
 
         .minusCircle{
-            width: 14px;
-            height: 14px;
+            width: 24px;
+            height: 24px;
             flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50px;
+            margin-left: 5px;
             background-color: red;
 
             p{
@@ -310,7 +316,7 @@ const MemberItem = styled.div`
     .memberName{
         color: #000;
         font-family: Pretendard;
-        font-size: 9px;
+        font-size: 16px;
         font-style: normal;
         font-weight: 600;
         line-height: 150%;
@@ -326,31 +332,33 @@ const AddMemberButton = styled.div`
     //padding: 10px 0;
     cursor: pointer;
     margin-top: 30px;
-    background-color: beige;
+    //background-color: beige;
     margin-bottom: 50px;
 
     .plusCircle{
-            width: 14px;
-            height: 14px;
+            width: 24px;
+            height: 24px;
             flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50px;
             background-color: black;
-            margin:0;
+            margin-top:4px;
+            margin-left: 5px;
             .plusLogo{
                 color: white;
                 //margin-top: 13px;
-                margin-bottom: 1px;
+                margin-bottom: 3px;
+                font-size: 20px;
             }
     }
 
     .plusText{
         width:100px;
         height:30px;
-        background-color: red;
-        margin: 0;
+        //background-color: red;
+        margin-top: 5px;
         margin-left: 10px;
         color: #000;
         font-family: Pretendard;
@@ -392,6 +400,7 @@ export function TravelDetailEdit(){
         "이이이",
         "박박박",
         "최최최",
+        "이제원",
     ]);
 
     const [tripName,setTripName]=useState("");
@@ -399,6 +408,25 @@ export function TravelDetailEdit(){
     const [tripStartDate,setTripStartDate]=useState("");
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
+
+    const patchTripData=async()=>{
+        try{
+            const updatedTripData={
+                name: tripName,
+                place: tripPlace,
+                startDate: tripStartDate,
+                endDate: tripEndDate,
+                goalExp: tripGoalExp,
+            }
+            const response=await axiosInstance.patch(`/trip/${tripId}`, updatedTripData);
+            console.log(response);
+            navigate(`/travel/detail/${tripId}`);
+            alert("여행 정보 수정 완료");
+        }
+        catch(error){
+            console.error("Error patching travel data:", error);
+        }
+    }
 
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
@@ -427,7 +455,7 @@ export function TravelDetailEdit(){
 
     // const fetchTripData=async()=>{
     //     try{
-    //         const response=await axios.get(`/trip/${tripId}`);
+    //         const response=await axiosInstance.get(`/trip/${tripId}`);
     //         setTripName(response.data.name);
     //         setTripPlace(response.data.place);
     //         setTripStartDate(response.data.startDate);
@@ -444,24 +472,6 @@ export function TravelDetailEdit(){
     //     fetchTripData();
     // },[]);
 
-    // const patchTripData=async()=>{
-    //     try{
-    //         const updatedTripData={
-    //             name: tripName,
-    //             place: tripPlace,
-    //             startDate: tripStartDate,
-    //             endDate: tripEndDate,
-    //             goalExp: tripGoalExp,
-    //         }
-    //         const response=await axios.patch(`/trip/${tripId}`, updatedTripData);
-    //         console.log(response);
-    //         alert("여행 정보 수정 완료");
-    //     }
-    //     catch(error){
-    //         console.error("Error patching travel data:", error);
-    //     }
-    // }
-
     return(
         <EditContainor>
             <TitleAndBtn>
@@ -471,10 +481,6 @@ export function TravelDetailEdit(){
                 <div className='title'>
                     <p>여행 정보 수정</p>
                 </div>
-                {/* <div className='complete' onClick={patchTripData}> 추가해야함*/}
-                {/* <div className='complete'>
-                    <p>완료</p>
-                </div> */}
             </TitleAndBtn>
 
             {/* 여행 정보 수정 영역 */}
@@ -510,7 +516,7 @@ export function TravelDetailEdit(){
                             <span className='memberName'>{member}</span>
                         </MemberItem>
                     ))}
-                    <AddMemberButton>
+                    <AddMemberButton onClick={()=>navigate(`/trip/join/${tripId}`)}>
                         <div className='plusCircle'>
                             <p className='plusLogo'>+</p>
                         </div>
@@ -519,7 +525,7 @@ export function TravelDetailEdit(){
                 </MembersSection>
             </TravelInfoEdit>
 
-            <CompleteBtn>
+            <CompleteBtn onClick={patchTripData}>
                 <p>완료</p>
             </CompleteBtn>
 

@@ -88,7 +88,7 @@ const BalanceSummary = ({ initialAmount, categories }) => {
   return (
     <SummaryContainer>
       <BalanceSection>
-        <BalanceTitle>잔액</BalanceTitle>
+        <BalanceTitle>총 지출액</BalanceTitle>
         <BalanceAmount>{balance.toLocaleString()} 원</BalanceAmount>
         <ProgressBarWrapper>
           <ProgressBarContainer>

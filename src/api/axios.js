@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if(error.response.status===401 && !error.config._retry){ // 이 코드는 API 요청 시 토큰이 만료되었을 때(401 에러) 그리고 아직 재시도하지 않았을 때(_retry가 false일 때) 실행됩니다. 토큰을 재발급 받고 API를 재요청하기 위한 조건문입니다.
+    if(error.response?.status===401 && !error.config._retry){ // 이 코드는 API 요청 시 토큰이 만료되었을 때(401 에러) 그리고 아직 재시도하지 않았을 때(_retry가 false일 때) 실행됩니다. 토큰을 재발급 받고 API를 재요청하기 위한 조건문입니다.
       try{
         const refreshToken=localStorage.getItem("refresh_token");
         const response = await axiosInstance.post("/auth/kakao/token_reissue",

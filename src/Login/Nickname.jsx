@@ -23,7 +23,7 @@ export function Nickname(){
             const response=await axiosInstance.post(`/auth/signup`, 
             {   
                 accessToken: localStorage.getItem('access_token'),
-                nickname: nickname
+                nickName: nickname
             },
             );
 
@@ -35,7 +35,7 @@ export function Nickname(){
            // 더 자세한 에러 정보 출력
             console.log(error);
 
-            if (error?.response?.status === 404) {
+            if (error?.response?.status === 400) {
                 alert("닉네임이 중복되었어요. 다시 입력해주세요!");
             } else {
                 alert("오류가 발생했습니다. 다시 시도해주세요.");
