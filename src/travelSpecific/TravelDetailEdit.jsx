@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from '../api/axios.js';
 
+
 const EditContainor=styled.div`
     width:375px;
     height:900px;
@@ -390,6 +391,7 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+
     const navigate = useNavigate();
     const { tripId } = useParams();
 
