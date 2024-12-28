@@ -5,13 +5,12 @@ import { useRef } from 'react';
 import TravelCreate from "../Travel/TravelCreate";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import axiosInstance from '../api/axios.js'
 
 const persons = [
-    { id: 1, name: "구성원"},
-    { id: 2, name: "구성원"},
-    { id: 3, name: "구성원"},
-    { id: 4, name: "구성원"},
-    { id: 5, name: "이제원"}
+    { id: 1, name: "이제원"},
+    { id: 6, name: "이철우"},
+    { id: 8, name: "박규영"},
 ];
 
 const getCurrentDate = () => {
@@ -39,6 +38,9 @@ export function ExpAdd(){
     const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef(null);
     const [expDate, setExpDate] = useState(getCurrentDate()); //지출 날짜
+
+    const [people, setPeople] = useState([]); //여행 인원 목록
+    const [imageFiles, setImageFiles] = useState([]);
    
 
     const handleExpDateChange = (e) => {
@@ -106,8 +108,17 @@ export function ExpAdd(){
         setSelectedPerson(personId);
     };
 
+    // const handleImageUpload = (event) => {
+    //     const files = Array.from(event.target.files);
+    //     const newImages = files.map(file => URL.createObjectURL(file));
+    //     setSelectedImages(prev => [...prev, ...newImages]);
+    // };
+    
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
+        // 파일 객체 저장
+        setImageFiles(prev => [...prev, ...files]);
+        // 미리보기용 URL 생성
         const newImages = files.map(file => URL.createObjectURL(file));
         setSelectedImages(prev => [...prev, ...newImages]);
     };
@@ -140,10 +151,95 @@ export function ExpAdd(){
         setMemo(e.target.value);
     };
 
+    const fetchData=async()=>{
+        try{
+            const response=await axiosInstance.get(`/trip/${tripId}/expense`);
+            // const response=await axiosInstance.get(`/trip/1/expense`);
+            setPeople(response.data.members.map(member => ({
+                id: member.memberId,
+                name: member.nickName
+            })));
+            console.log(response.data);
+        }
+        catch(error){
+            console.log(error);
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    const handleCompleteClick=async()=>{
+        
+        const memberCosts = Object.entries(personalAmounts).map(([memberId, cost]) => ({
+            memberId: parseInt(memberId),
+            cost: parseInt(cost)
+        }));
+
+        const requestData = {
+            payer: selectedPerson,  // 결제자 ID
+            title: what,               // 항목명
+            expenseCategory: selectedCategory,
+            amount: parseInt(totalAmount),
+            expenseDate: expDate,
+            //image_url: selectedImages.length > 0 ? selectedImages[0] : "",  // 첫 번째 이미지 URL
+            memo: memo,
+            members: memberCosts
+        };
+
+       
+        try{
+
+            const formData=new FormData();
+
+            const jsonBlob = new Blob([JSON.stringify(requestData)], { type: 'application/json' });
+            formData.append('request', jsonBlob);
+
+            //formData.append('request',JSON.stringify(requestData));
+            
+            if (imageFiles.length > 0) {
+                imageFiles.forEach(file => {
+                    formData.append('expenseImage', file);
+                });
+            }
+
+            //formData.append('expenseImage',selectedImages); 
+            
+            // const response=await axiosInstance.post(`/trip/${tripId}/expense`,formData,{
+            //     headers:{
+            //         'Content-Type':'multipart/form-data'
+            //     }
+            // });
+
+            const response=await axiosInstance.post(`/trip/1/expense`,formData,{
+                headers:{
+                    'Content-Type':'multipart/form-data',
+                }
+            });
+            
+            navigate(`/travel/detail/${tripId}`);
+            console.log(response.data);
+
+        }catch(error){
+            console.log(error);
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    const test=async()=>{
+        const response=await axiosInstance.get(`/test`);
+        console.log(response.data);
+    }
+
     useEffect(() => {
         checkValid();
     }, [personalAmounts, totalAmount]);
 
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
+
+    useEffect(() => {
+        test();
+    }, []);
 
     return(
         <ExpAddContainor>
@@ -154,7 +250,7 @@ export function ExpAdd(){
                 <div className='title'>
                     <p>지출 추가</p>
                 </div>
-                <div className='complete'>   {/* travel/detail 로 navigate} */}
+                <div className='complete' onClick={handleCompleteClick}>   {/* travel/detail 로 navigate} */}
                     <p>완료</p>
                 </div>
             </TitleAndBtn>
@@ -175,10 +271,10 @@ export function ExpAdd(){
                 <ExpCategory>
                     <p>분류</p>
                     <div className="categoryButtons">
-                        <button className={selectedCategory === '식사' ? 'active' : ''} onClick={() => handleCategoryClick('식사')}>식사</button>
-                        <button className={selectedCategory === '교통' ? 'active' : ''} onClick={() => handleCategoryClick('교통')}>교통</button>
                         <button className={selectedCategory === '숙소' ? 'active' : ''} onClick={() => handleCategoryClick('숙소')}>숙소</button>
-                        <button className={selectedCategory === '쇼핑' ? 'active' : ''} onClick={() => handleCategoryClick('쇼핑')}>쇼핑</button>
+                        <button className={selectedCategory === '교통' ? 'active' : ''} onClick={() => handleCategoryClick('교통')}>교통</button>
+                        <button className={selectedCategory === '식사' ? 'active' : ''} onClick={() => handleCategoryClick('식사')}>식사</button>
+                        <button className={selectedCategory === '활동' ? 'active' : ''} onClick={() => handleCategoryClick('활동')}>활동</button>
                         <button className={selectedCategory === '기타' ? 'active' : ''} onClick={() => handleCategoryClick('기타')}>기타</button>
                     </div>
                 </ExpCategory>
@@ -197,7 +293,7 @@ export function ExpAdd(){
                     <p className="payAmount">세부금액</p>
                 </PeopleTitle>
                 <PeopleList>
-                    {persons.map((person) => (
+                    {persons.map((person) => ( //persons대신 people 사용
                         <PersonItem key={person.id}>
                             <div className="leftSection">
                                 <div 
@@ -284,7 +380,7 @@ const ExpAddContainor=styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: whitesmoke;
+    //background-color: whitesmoke;
 `
 
 const TitleAndBtn=styled.div`
@@ -295,7 +391,7 @@ const TitleAndBtn=styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top:100px;
-    background-color: blue;
+    //background-color: blue;
 
     .material-symbols-outlined{
         width:30px;
@@ -307,6 +403,7 @@ const TitleAndBtn=styled.div`
         font-size:20px;
         color: gray;
         border: none;
+        outline: none;
     }
 
     .title{
@@ -321,7 +418,7 @@ const TitleAndBtn=styled.div`
         font-style: normal;
         font-weight: 600;
         line-height: 150%; /* 21px */
-        background-color: red;
+        //background-color: red;
     }
 
     .complete{
@@ -330,13 +427,14 @@ const TitleAndBtn=styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: aqua;
-        color: #000;
+        //background-color: aqua;
+        color: var(--Grayscale-9, #141414);
+        text-align: right;
         font-family: Pretendard;
-        font-size: 14px;
+        font-size: 16px;
         font-style: normal;
-        font-weight: 400;
-        line-height: 150%; /* 21px */
+        font-weight: 600;
+        line-height: 150%; /* 24px */
     }
 `
 
@@ -348,7 +446,7 @@ const SummaryContainor=styled.div`
     //justify-content: center;
     align-items: center;
     margin-top: 72px;
-    background-color: red;
+    //background-color: red;
 `
 
 const ExpDate=styled.div`
@@ -358,14 +456,14 @@ const ExpDate=styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: yellow;
+    //background-color: yellow;
 
 
     .expDateInput{
         width:200px;
         height:26px;
         border: none;
-        background-color: aqua;
+        //background-color: aqua;
         text-align: center;
         color: var(--Grayscale-9, #141414);
         text-align: right;
@@ -396,7 +494,7 @@ const ExpTitle=styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top: 24px;
-    background-color: blue;
+    //background-color: blue;
     color: var(--Grayscale-7, #474747);
     font-family: Pretendard;
     font-size: 16px;
@@ -409,7 +507,7 @@ const ExpTitle=styled.div`
         width:200px;
         height:24px;
         border: none;
-        background-color: aqua;
+        //background-color: aqua;
         text-align: right;
     }
 `
@@ -421,7 +519,7 @@ const ExpAmount=styled.div`
    justify-content: space-between;
    align-items: center;
    margin-top: 24px;
-   background-color: green;
+   //background-color: green;
    color: var(--Grayscale-7, #474747);
     font-family: Pretendard;
     font-size: 16px;
@@ -434,7 +532,7 @@ const ExpAmount=styled.div`
         width:200px;
         height:24px;
         border: none;
-        background-color: aqua;
+        //background-color: aqua;
         text-align: right;
 
     }
@@ -447,7 +545,7 @@ const ExpCategory=styled.div`
    justify-content: space-between;
    align-items: center;
    margin-top: 24px;
-   background-color: yellow;
+   //background-color: yellow;
    color: var(--Grayscale-7, #474747);
    font-family: Pretendard;
    font-size: 16px;
@@ -490,7 +588,7 @@ const ExpDivide=styled.div`
    justify-content: space-between;
    align-items: center;
    margin-top: 24px;
-   background-color: purple;
+   //background-color: purple;
    color: var(--Grayscale-7, #474747);
    font-family: Pretendard;
    font-size: 16px;
@@ -547,8 +645,8 @@ const ExpDivide=styled.div`
 `
 const Bar=styled.div`
     width:331px;
-    height:12px;
-    background-color: grey;
+    height:4px;
+    background-color: #EFEFEF;
 `
 
 const PeopleContainor=styled.div`
@@ -557,7 +655,7 @@ const PeopleContainor=styled.div`
     margin-top: 32px;
     border-radius: 16px;
     background: #FFF;
-    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
     //background-color: blue;
 `
 
@@ -569,7 +667,7 @@ const PeopleTitle=styled.div`
     //justify-content: space-between;
     align-items: center;
     margin-top: 54px;
-    background-color: red;
+    //background-color: red;
 
     .payPerson{
         margin-left: 36px;
@@ -599,7 +697,8 @@ const PersonItem = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 16px;
-    background-color: yellow;
+    //background-color: yellow;
+    border-bottom: 1px solid #EEEEEE;
 
     .leftSection {
         display: flex;
@@ -648,6 +747,7 @@ const PersonItem = styled.div`
         padding: 4px 8px;
         //margin-right: 27px;
         text-align: center;
+        border: none;
         outline: none;
 
         &::placeholder {
@@ -711,7 +811,7 @@ const PhotoContainer = styled.div`
     padding: 20px;
     background: #FFF;
     border-radius: 16px;
-    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
 
     .photoTitle {
         font-size: 16px;
@@ -815,7 +915,7 @@ const MemoContainor=styled.div`
     padding: 20px;
     background: #FFF;
     border-radius: 16px;
-    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
     align-items: center;

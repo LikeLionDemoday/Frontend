@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 import styled from "styled-components"; 
+import { useNavigate } from "react-router-dom";
 
 import dummyImage1 from '../asset/dummy1.png'; 
 import dummyImage2 from '../asset/dummy2.png';
@@ -14,6 +15,7 @@ const dummyImages = [
 
 
 export function TravelPictureLook(){
+    const navigate = useNavigate();
     const { tripId } = useParams();
     const initialIndex=2;
 
@@ -73,13 +75,13 @@ export function TravelPictureLook(){
 const TravelPictureLookContainor=styled.div`
     width:100%;
     height:800px;
-    background-color:red;
+    //background-color:red;
 `
 const Title=styled.div`
     width:100%;
     height:30px;
     margin-top:68px;
-    background-color: beige;
+    //background-color: beige;
     display: flex;
     //justify-content: center;
     //align-items: center;
@@ -94,7 +96,7 @@ const Title=styled.div`
         font-weight: 600;
         line-height: 150%; /* 24px */
         margin-left: 135px;
-        background-color: blue;
+        //background-color: blue;
     }
 
     .cancelBtn{
@@ -103,7 +105,7 @@ const Title=styled.div`
         .x{
             width: 24px;
             height: 24px;
-            color: var(--Grayscale-White, #FFF);
+            color: black;
             text-align: center;
             font-family: "Pretendard Variable";
             font-size: 16px;
@@ -113,7 +115,7 @@ const Title=styled.div`
         }
 
         margin-left: 100px;
-        background-color: blue;
+        //background-color: blue;
     }
 `
 
@@ -122,14 +124,20 @@ const PictureContainor=styled.div`
     height:550px;
     margin-top: 20px;
     border-radius: 25px;
-    background-color: blue;
+    box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
+    //background-color: blue;
 `
 
 const PictureListContainor=styled.div`
     width:100%;
-    height:80px;
+    height:45px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-top: 30px;
-    background-color: green;
+    border-radius: 25px;
+    box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
+    //background-color: green;
 `
 
 const MainImage = styled.img`

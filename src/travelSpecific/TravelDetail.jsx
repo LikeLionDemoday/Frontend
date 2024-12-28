@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { useState,useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../api/axios";
+import  axiosInstance  from "../api/axios.js";
 import { useParams } from "react-router-dom";
 import BalanceSummaryJewon from "../Components/BalanceSummaryJewon.jsx"
 
@@ -27,11 +27,56 @@ const peopleResults = [
     
 ];
 
+const dummyTripData = {
+    budget: 500000,
+    remainingCost: 130000,
+    categories: [
+        {
+            category: "식사",
+            cost: 150000
+        },
+        {
+            category: "간식",
+            cost: 40000
+        },
+        {
+            category: "교통",
+            cost: 80000
+        },
+        {
+            category: "숙소",
+            cost: 100000
+        },
+        {
+            category: "활동",
+            cost: 60000
+        },
+        {
+            category: "기타",
+            cost: 50000
+        }
+    ],
+    members: [
+        {
+            memberId: 1,
+            nickName: "예송"
+        },
+        {
+            memberId: 2,
+            nickName: "홍엽"
+        },
+        {
+            memberId: 3,
+            nickName: "철우"
+        }
+    ]
+};
+
 const TravelDetailContainor =styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: whitesmoke;
+    //background-color: whitesmoke;
     position: relative;
 
     .Btns{
@@ -306,8 +351,62 @@ export function TravelDetail(){
     const modalRef = useRef(null);
     const navigate=useNavigate();
     const [tripData,setTripData]=useState([]);
+    const [tripDataExpense,setTripDataExpense]=useState(dummyTripData); //여행 지출 관리
     const { tripId } = useParams();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); //삭제 확인 창 열기
+
+    const fetchTripDataExpense=async()=>{
+        try{
+            const response=await axiosInstance.get(`/trip/${tripId}/expense`);
+            setTripDataExpense(response.data.data);
+            console.log(response);
+        }catch(error){
+            console.error("Error fetching travel data:", error);
+        }
+    }
+
+    const categoryOrder = ["숙소", "교통", "식사", "활동", "기타"];
+
+    const categoryColors = {
+        "숙소": "#4CAF50",
+        "교통": "#2196F3",
+        "식사": "#FF9800",
+        "간식": "#E91E63",
+        "활동": "#9C27B0",
+        "기타": "#FF5C00"
+    };
+
+    // const formatCategories = (categories) => {
+    //     if (!categories) return [];
+        
+    //     return categories.map(cat => ({
+    //         name: cat.category,
+    //         amount: cat.cost,
+    //         color: categoryColors[cat.category] || "#607D8B" // 기본 색상
+    //     }));
+    // };
+
+    const formatCategories = (categories) => {
+        if (!categories) return [];
+        
+        // 정해진 순서대로 카테고리 정렬
+        const sortedCategories = categoryOrder.map(orderCat => {
+            const found = categories.find(cat => cat.category === orderCat);
+            return found ? {
+                name: found.category,
+                amount: found.cost,
+                color: categoryColors[found.category]
+            } : {
+                name: orderCat,
+                amount: 0,
+                color: categoryColors[orderCat]
+            };
+        });
+
+        // 금액이 0인 카테고리 제외
+        return sortedCategories.filter(cat => cat.amount > 0);
+    };
+
 
     const toggleModal = () => {
         setModalOpen(!isModalOpen);
@@ -326,6 +425,8 @@ export function TravelDetail(){
             state: { selectedIndex: index } // 선택된 인덱스만 전달
         });
     };
+
+   
 
     // const fetchTripData=async()=>{
     //     try{
@@ -349,7 +450,14 @@ export function TravelDetail(){
     
     // useEffect(()=>{
     //     fetchTripData();
+    //     fetchTripDataExpense();
     // },[]);
+
+    useEffect(() => {
+        // 데이터 확인용 콘솔 로그
+        console.log("Formatted Categories:", formatCategories(tripDataExpense.categories));
+    }, []);
+
 
     return( //만약 다른곳 눌러서 모달창 없애고 싶으면 TravelDetailContainor onClick={closeModal} 추가 
         <TravelDetailContainor> 
@@ -396,11 +504,8 @@ export function TravelDetail(){
 
             <ExpContainor>
                 <BalanceSummaryJewon 
-                  initialAmount={1000000}
-                  categories={[
-                    { name: "숙소", amount: 300000, color: "#4CAF50" },
-                    { name: "교통비", amount: 200000, color: "#2196F3" }
-                  ]}
+                  initialAmount={tripDataExpense.budget}
+                  categories={formatCategories(tripDataExpense.categories)}
                 />
             </ExpContainor>
 
@@ -420,6 +525,7 @@ export function TravelDetail(){
 
             <ModalContainer isOpen={isModalOpen} ref={modalRef}>
                 <ModalItem onClick={()=>handleItemClick(`/travel/detail/edit/${tripId}`)}>편집</ModalItem>
+                {/* <ModalItem onClick={()=>handleItemClick(`/travel/detail/edit`)}>편집</ModalItem> */}  
                 <ModalItem onClick={() => setShowDeleteConfirm(true)}>삭제</ModalItem>
                 <ModalItem onClick={ () => {navigate(`/trip/join/${tripId}`)}}>공유</ModalItem>
             </ModalContainer>
