@@ -409,6 +409,8 @@ export function TravelDetailEdit(){
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
 
+<<<<<<< HEAD
+=======
     const patchTripData=async()=>{
         try{
             const updatedTripData={
@@ -428,6 +430,7 @@ export function TravelDetailEdit(){
         }
     }
 
+>>>>>>> main
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);

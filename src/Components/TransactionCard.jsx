@@ -25,17 +25,18 @@ const TransactionCard = ({
       </Header>
       {isExpanded && (
         <>
-          <Divider />
+          <Divider /> {/* 날짜 위의 선 */}
           <Content>
             <Date isInactive={!isToggleOn}>{date}</Date>
-            <Toggle onClick={(e) => {
-              e.stopPropagation(); // 카드 확장/축소 방지
-              onToggleChange();
-            }}>
+            <Toggle
+              onClick={(e) => {
+                e.stopPropagation(); // 카드 확장/축소 방지
+                onToggleChange();
+              }}
+            >
               <img src={isToggleOn ? toggleOn : toggleOff} alt="Toggle" />
             </Toggle>
           </Content>
-          <Divider />
           <TransactionList>
             {transactions.map((transaction, index) => (
               <Transaction key={index} isInactive={!isToggleOn}>
@@ -44,7 +45,7 @@ const TransactionCard = ({
                 <span>{transaction.to}</span>
                 <AmountText>
                   {transaction.amount > 0 ? "+" : ""}
-                  {transaction.amount.toLocaleString()} 원
+                  {transaction.amount.toLocaleString()}
                 </AmountText>
               </Transaction>
             ))}
@@ -57,14 +58,20 @@ const TransactionCard = ({
 
 export default TransactionCard;
 
+// Styled Components
+
 const CardContainer = styled.div`
   background: #fff;
-  border-radius: 10px;
-  padding: ${(props) => (props.isExpanded ? "16px" : "8px 16px")};
+  border-radius: 16px;
+  height: ${(props) => (props.isExpanded ? "auto" : "100px")}; /* 접힌 상태에서 높이 고정 */
+  padding: 16px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+  margin-bottom: 15px;
   cursor: pointer;
+  overflow: hidden; 
+  transition: height 0.3s ease; 
 `;
+
 
 const Header = styled.div`
   display: flex;
@@ -80,25 +87,24 @@ const Info = styled.div`
 const Title = styled.span`
   font-size: 12px;
   color: ${(props) => (props.isInactive ? "#ADADAD" : "#888")};
+  margin-top: 20px;
+  margin-left: 15px;
 `;
 
 const Name = styled.span`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  margin-top: 4px;
+  margin-top: 20px;
+  margin-left: 14px;
   color: ${(props) => (props.isInactive ? "#ADADAD" : "#000")};
 `;
 
 const Amount = styled.span`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  margin-top: 38px;
+  margin-right: 15px;
   color: ${(props) => (props.isInactive ? "#ADADAD" : "#000")};
-`;
-
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 16px 0;
 `;
 
 const Content = styled.div`
@@ -110,36 +116,46 @@ const Content = styled.div`
 const Date = styled.span`
   font-size: 12px;
   color: ${(props) => (props.isInactive ? "#ADADAD" : "#888")};
+  margin-left: 15px
 `;
 
 const Toggle = styled.div`
   cursor: pointer;
 
   img {
-    width: 40px;
-    height: 20px;
+    width: 50px;
+    height: 30px;
   }
+  margin-right: 15px
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 25px 0;
 `;
 
 const TransactionList = styled.div`
-  margin-top: 16px;
+  margin-top: 10px;
 `;
 
 const Transaction = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  font-size: 14px;
   color: ${(props) => (props.isInactive ? "#ADADAD" : "#000")};
 `;
 
 const Arrow = styled.img`
-  margin: 0 8px;
+  margin: 0 5px;
   width: 50px;
   height: 50px;
 `;
 
 const AmountText = styled.span`
   font-size: 14px;
-  font-weight: bold;
+  margin-right: 15px
 `;

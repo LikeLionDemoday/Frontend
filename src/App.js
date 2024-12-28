@@ -66,7 +66,7 @@ function App() {
           {/* 여기 뒤에 /:tripId 추가해야함 */}
 
           <Route path="/calculate/total" element={<CalTotal />} />
-
+        
           <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>
@@ -74,6 +74,7 @@ function App() {
           {/* 여기 뒤에 /:tripId 추가해야함 */}
           <Route path='/mypage' element={<MyPage/>}/>
           <Route path='/nickname' element={<Nickname/>}/>
+
         </Routes>
       </Router>
     </>
