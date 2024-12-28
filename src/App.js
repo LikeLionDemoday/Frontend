@@ -23,6 +23,7 @@ import { Redirect } from "./Login/Redirect";
 import { TravelPictureLook } from "./travelSpecific/TravelPictureLook";
 import { MyPage } from "./mypage/MyPage";
 import { Nickname } from "./Login/Nickname";
+import { OnBoarding } from "./onBording/OnBoarding";
 
 function App() {
   useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
       <GlobalStyle />
       <Router>
         <Routes>
+          <Route path="/" element={<OnBoarding />} />  
           <Route path="/trip" element={<TravelCreate />} />
           <Route path="/trip/join" element={<TravelJoin/>} />
           {/* 여기 뒤에 /:tripId 추가해야함 */}
