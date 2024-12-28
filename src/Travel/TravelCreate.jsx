@@ -10,6 +10,9 @@ const TravelCreate = () => {
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("create");
+  // const [userData, setUserData] = useState({});
+  // 이걸로 바꿔야함
+
   const [userData, setUserData] = useState({
     tripName: "",
     startDate: "",
@@ -159,6 +162,7 @@ const InnerBox = ({ userData, setUserData }) => {
 
   const handleSubmit = async () => {
     try {
+      console.log('userData:', userData); // userData를 콘솔에 출력
       const response = await axiosInstance.post('/trip', userData);
 
       if (response.data.isSuccess) {
@@ -416,17 +420,19 @@ const JoinBoxComponent = ({ joinCode, setJoinCode }) => {
   const handleSubmit = async () => {
     try {
       const response = await axiosInstance.post('/trip/join', { joinCode });
-      const { isSuccess, success, code, message } = response.data;
+      const { success, code, message } = response.data;
 
-      if (isSuccess || success) {
+      if (success) {
         alert('여행에 성공적으로 참여했습니다!');
         navigate('/tripMain');
       } else {
         switch (code) {
           case "404":
+            alert(message);
             console.error('여행 참여 실패: 해당 여행이 존재하지 않습니다.');
             break;
           case "400":
+            alert(message);
             console.error('여행 참여 실패: 멤버가 이미 여행에 추가되어 있습니다.');
             break;
           default:

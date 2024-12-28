@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+
 const EditContainor=styled.div`
     width:375px;
     height:900px;
@@ -382,6 +383,7 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+
     const navigate = useNavigate();
     const { tripId } = useParams();
 
@@ -398,8 +400,6 @@ export function TravelDetailEdit(){
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
 
-    const { tripId } = useParams();
-    const navigate = useNavigate();
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);

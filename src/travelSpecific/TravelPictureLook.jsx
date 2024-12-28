@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 import styled from "styled-components"; 
-
+import { useNavigate } from "react-router-dom";
 import dummyImage1 from '../asset/dummy1.png'; 
 import dummyImage2 from '../asset/dummy2.png';
 import dummyImage3 from '../asset/dummy3.png';
@@ -16,7 +16,7 @@ const dummyImages = [
 export function TravelPictureLook(){
     const { tripId } = useParams();
     const initialIndex=2;
-
+    const navigate = useNavigate();
     const [tripData,setTripData]=useState([]);
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
