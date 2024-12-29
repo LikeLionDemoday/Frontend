@@ -7,6 +7,7 @@ import { ReactComponent as PlusButton } from "../icons/plus.svg";
 import { ReactComponent as SearchButton } from "../icons/SearchRight.svg";
 import { ReactComponent as Xbutton } from "../icons/Xbutton.svg";
 import Sidebar from "../Components/Sidebar";
+import axiosInstance from "../api/axios.js";
 
 
 const TravelList = () => {
@@ -52,7 +53,7 @@ const TravelList = () => {
   useEffect(() => {
     const fetchTravelList = async () => {
       try {
-        const response = await axios.get("/trip/search"); //PRAMS 없이 요청하면 전체
+        const response = await axiosInstance.get("/trip/search"); //PRAMS 없이 요청하면 전체
         setTravelList(response.data.data.slice(0, 5)); // 첫 5개 항목만 설정
       } catch (error) {
         console.error("해당 여행 목록 없음!", error);
@@ -65,7 +66,7 @@ const TravelList = () => {
    // 빈 항목 추가
    const filledList = [...travelList];
    while (filledList.length < 5) {
-     filledList.push({ name: "", startDate: "", endDate: "" });
+     filledList.push({ tripName: "", startDate: "", endDate: "" });
    }
 
   return (
@@ -78,7 +79,7 @@ const TravelList = () => {
         </ButtonBox>
       </ListHeader>
       {filledList.map((travel, index) => {
-        const isEmpty = !travel.name && !travel.startDate && !travel.endDate;
+        const isEmpty = !travel.tripName && !travel.startDate && !travel.endDate;
         const formattedStartDate = travel.startDate.slice(5);
         const formattedEndDate = travel.endDate.slice(5);
 
@@ -95,7 +96,7 @@ const TravelList = () => {
               borderBottom: isEmpty ? 'none' : '1px solid #ddd',
               height: isEmpty ? '20px' : 'auto', // 빈 항목일 때 높이 설정
               }}>
-            <Name>{travel.name}</Name>
+            <Name>{travel.tripName}</Name>
             {!isEmpty && <Date>{formattedStartDate} ~ {formattedEndDate}</Date>}
           </ListItem>
         );
