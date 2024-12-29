@@ -27,6 +27,10 @@ export function Nickname(){
             },
             );
 
+
+            const memberId = response.data.data.memberId;
+            localStorage.setItem('memberId', memberId);
+
             navigate("/main");
 
             console.log(response.data);
