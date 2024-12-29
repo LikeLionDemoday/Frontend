@@ -17,7 +17,7 @@ export function TravelPictureLook(){
     const navigate = useNavigate();
     const { tripId } = useParams();
     const initialIndex=2;
-    const navigate = useNavigate();
+    
     const [tripData,setTripData]=useState([]);
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);

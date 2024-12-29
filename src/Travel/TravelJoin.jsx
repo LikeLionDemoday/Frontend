@@ -4,31 +4,32 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { ReactComponent as Xbutton } from "../icons/Xbutton.svg";
 import { ReactComponent as CopyBox } from "../icons/Copy.svg";
+import axiosInstance from "../api/axios.js";
 
 const TravelJoin = () => {
 
   const { tripId } = useParams();
   const navigate = useNavigate();
 
-  // const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({});
  // 이걸로 바꿔야함
 
 
 //더미 데이터
-  const [userData, setUserData] = useState({
-    tripName: "매드크리스마스",
-    startDate: "2024-12-24",
-    endDate: "2024-12-25",
-    place: "제주특별자치도 서귀포시",
-    photo: "/asset/제주도도.jpg",
-    joinCode: "123456",
-  });
+//  const [userData, setUserData] = useState({
+//    tripName: "매드크리스마스",
+//    startDate: "2024-12-24",
+//    endDate: "2024-12-25",
+//    place: "제주특별자치도 서귀포시",
+//    tripImageUrl: "/asset/제주도도.jpg",
+//    joinCode: "123456",
+//  });
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`trip/share/${tripId}`);
+        const response = await axiosInstance.get(`/trip/share/${tripId}`);
         if (response.data.success) {
           setUserData(response.data.data);
         } else {
@@ -64,8 +65,8 @@ return (
       <CreateBox>
         <CircleWrapper>
           <Circle>
-            {userData.photo && (
-              <img src={userData.photo} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+            {userData.tripImageUrl && (
+              <img src={userData.tripImageUrl} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
             )}
           </Circle>
         </CircleWrapper>

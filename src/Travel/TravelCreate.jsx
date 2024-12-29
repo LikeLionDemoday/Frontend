@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as BackwardIcon } from "../icons/backward.svg";
@@ -6,25 +6,23 @@ import axiosInstance from "../api/axios";
 import { ReactComponent as AddPhotoIcon } from "../icons/PhotoButton.svg";
 import { ReactComponent as DeleteIcon } from "../icons/DeleteButton.svg";
 
+
+
+
 const TravelCreate = () => {
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("create");
-  // const [userData, setUserData] = useState({});
-  // 이걸로 바꿔야함
-
   const [userData, setUserData] = useState({
     tripName: "",
     startDate: "",
     endDate: "",
     place: "",
-    budget: "",
-    photo: null,
+    budget: 0,
+    // tripImage: null,
   });
   
   const [joinCode, setJoinCode] = useState();
-
-
 
 
   return (
@@ -138,36 +136,84 @@ const Title = styled.h1`
 `;
 
 const InnerBox = ({ userData, setUserData }) => {
-  const navigate = useNavigate();
-  const fileInputRef = useRef();
 
+
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  //이미지업로드
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+    const file =  event.target.files[0];
     if (file) {
+      console.log('Selected file:', file);
+      setImageFile(file);
       const imageUrl = URL.createObjectURL(file);
-      setUserData(prev => ({
-        ...prev,
-        photo: imageUrl // 단일 이미지 URL 저장
-      }));
-      event.target.value = null; // 파일 입력 초기화
+      setSelectedImage(imageUrl);
+      console.log('Selected image URL:', imageUrl);
+      console.log('Selected image file:', file);
     }
   };
 
+  //이미지삭제
   const handleDeleteImage = () => {
-    setUserData(prev => ({
-      ...prev,
-      photo: null // 사진 삭제
-    }));
-  };
+    setSelectedImage(null);
+    setImageFile(null);
+    // 파일 input 초기화
+    if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+};
 
   const handleSubmit = async () => {
     try {
       console.log('userData:', userData); // userData를 콘솔에 출력
-      const response = await axiosInstance.post('/trip', userData);
 
-      if (response.data.isSuccess) {
-        const { tripId } = response.data.data;
-        navigate(`/trip/join/${tripId}`);
+      // FormData 객체 생성
+      const formData = new FormData();
+
+
+      // //물어보기. jsonBlob 형식으로 보내도 되는지. 파싱 필요
+      // const jsonBlob = new Blob([JSON.stringify(userData)], { type: 'application/json' });
+      // formData.append('request', jsonBlob);
+
+      //userData의 각 필드를 FormData에 추가
+      formData.append('tripName', userData.tripName);
+      formData.append('startDate', userData.startDate);
+      formData.append('endDate', userData.endDate);
+      formData.append('place', userData.place);
+      formData.append('budget', userData.budget);
+
+      if (imageFile) {
+        console.log('Adding file to FormData:', imageFile);
+        formData.append('tripImage', imageFile);
+      }
+
+      // // 이미지 파일 추가
+      // const file = fileInputRef.current?.files[0];
+      // if (file) {
+      //   console.log('Adding file to FormData:', file);
+      //   formData.append('tripImage', file);
+      // } else {
+      //   console.log('No file selected');
+      // }
+
+      // FormData에 추가된 데이터 확인
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+      }
+
+      const response = await axiosInstance.post('/trip', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        alert('여행 생성 성공!');
+        const tripId = response.data.data;
+        navigate(`/trip/share/${tripId}`);
       } else {
         console.error('여행 생성 실패:', response.data.message);
       }
@@ -180,7 +226,7 @@ const InnerBox = ({ userData, setUserData }) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: name === "budget" ? parseInt(value, 10) || 0 : value // budget 값을 정수로 변환
     }));
   };
 
@@ -196,8 +242,8 @@ const InnerBox = ({ userData, setUserData }) => {
     <CreateBox>
       <CircleWrapper>
         <Circle>
-          {userData.photo ? (
-            <img src={userData.photo} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+          {selectedImage ? (
+            <img src={selectedImage} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
           ) : (
             <AddPhotoIconWrapper onClick={() => fileInputRef.current.click()}>
               <AddPhotoIcon />
@@ -211,7 +257,7 @@ const InnerBox = ({ userData, setUserData }) => {
             style={{ display: 'none' }}
           />
         </Circle>
-        {userData.photo && (
+        {selectedImage && (
           <DeleteIconWrapper onClick={handleDeleteImage}>
             <DeleteIcon />
           </DeleteIconWrapper>
@@ -223,7 +269,7 @@ const InnerBox = ({ userData, setUserData }) => {
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={(e) => handleBlur(e, "여행명을 입력해주세요.")}
-        value={userData.tripName}
+        value={userData.tripName || ""}
       />
       <DateContainer>
         <DateInput
@@ -419,7 +465,16 @@ const JoinBoxComponent = ({ joinCode, setJoinCode }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axiosInstance.post('/trip/join', { joinCode });
+      // FormData 객체 생성
+      const formData = new FormData();
+      formData.append('joinCode', joinCode);
+
+      const response = await axiosInstance.post('/trip/join', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       const { success, code, message } = response.data;
 
       if (success) {
