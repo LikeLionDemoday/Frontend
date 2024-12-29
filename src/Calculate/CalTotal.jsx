@@ -13,7 +13,17 @@ const CalTotal = () => {
   const fetchRecentSettlements = async () => {
     try {
       const response = await axiosInstance.get("/dutch");
-      setSettlements(response.data.data.dutch.slice(0, 5)); // 상위 5개만 가져오기
+      const dutchData = response.data.data.dutch.slice(0, 5); 
+      const mappedSettlements = dutchData.map((item) => ({
+        id: item.id,
+        payerId: item.payer.payerId,
+        payerName: item.payer.payerNickName,
+        payeeId: item.payee.payeeId,
+        payeeName: item.payee.payeeNickName,
+        perCost: item.perCost,
+        isCompleted: item.isCompleted,
+      }));
+      setSettlements(mappedSettlements);
     } catch (error) {
       console.error("Error fetching settlement list:", error);
     }
@@ -79,16 +89,16 @@ const CalTotal = () => {
             key={settlement.id}
             name={settlement.payeeName}
             amount={settlement.perCost}
-            date={`${settlement.startDate} - ${settlement.endDate}`}
+            date={`정산 ID: ${settlement.id}`}
             transactions={[
-              { from: "나", to: settlement.payeeName, amount: -settlement.perCost },
-              { from: settlement.payeeName, to: "나", amount: settlement.perCost },
+              { from: settlement.payerName, to: settlement.payeeName, amount: settlement.perCost },
+              { from: settlement.payeeName, to: settlement.payerName, amount: -settlement.perCost },
             ]}
             isToggleOn={settlement.isCompleted}
             onToggleChange={() =>
-              handleToggleChange(settlement.tripId, settlement.id, settlement.isCompleted)
+              handleToggleChange(settlement.payerId, settlement.id, settlement.isCompleted)
             }
-            onCardClick={() => handleCardClick(settlement.tripId, settlement.id)}
+            onCardClick={() => handleCardClick(settlement.payerId, settlement.id)}
           />
         ))}
       </TransactionCardWrapper>
