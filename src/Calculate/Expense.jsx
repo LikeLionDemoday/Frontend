@@ -1,48 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backButtonIcon from "../assets/backbutton.svg";
 import calButtonIcon from "../assets/calbutton.svg";
-import { useNavigate, useParams } from "react-router-dom"; 
-import ExpBS from "../Components/ExpBS"; 
+import { useNavigate, useParams } from "react-router-dom";
+import axiosInstance from "../api/axios";
+import ExpBS from "../Components/ExpBS";
 
 const Expense = () => {
   const [activeTab, setActiveTab] = useState("전체");
-  const navigate = useNavigate();
-  const { tripId } = useParams(); 
+  const [totalAmount, setTotalAmount] = useState(0); // 총 지출 금액
+  const [categories, setCategories] = useState([]); // 카테고리별 지출
+  const [days, setDays] = useState([]); // 날짜별 탭
+  const [expenses, setExpenses] = useState([]); // 지출 내역
 
+  const navigate = useNavigate();
+  const { tripId } = useParams(); // URL에서 tripId 가져오기
+
+  // 뒤로가기 버튼 클릭 핸들러
   const handleBackClick = () => {
     navigate(`/travel/detail/${tripId}`);
   };
 
+  // 지출 추가 버튼 클릭 핸들러
   const handleAddExpense = () => {
-    navigate("/expAdd");
+    navigate(`/expAdd/${tripId}`);
   };
 
-  // 더미 데이터
-  const days = ["전체", "24일", "25일", "26일", "27일", "28일"];
-  const expenses = Array(10).fill({ name: "항목명", amount: 40000 });
+  // 전체 지출 데이터 가져오기 (총액 및 카테고리별 지출)
+  const fetchTotalExpenses = async () => {
+    try {
+      const response = await axiosInstance.get(`/trip/${tripId}/expense`);
+      const data = response.data.data;
+      setTotalAmount(data.remainingCost); // 남은 금액
+      setCategories(data.categories); // 카테고리별 지출
+    } catch (error) {
+      console.error("Error fetching total expenses:", error);
+    }
+  };
 
-  // const fetchTotalExpenses = async () => {
-  //   try {
-  //     const response = await axiosInstance.get(`/trip/${tripId}/expense`);
-  //     const data = response.data.data;
-  //     setTotalAmount(data.remainingCost);
-  //     setCategories(data.categories); 
-  //   } catch (error) {
-  //     console.error("Error fetching total expenses:", error);
-  //   }
-  // };
+  // 날짜별 지출 데이터 가져오기
+  const fetchDailyExpenses = async () => {
+    try {
+      const response = await axiosInstance.get(`/trip/${tripId}/expense/date`);
+      const data = response.data.data.expenseByDate;
+      setDays(data.map((expense) => expense.date)); // 날짜 목록 생성
+      setExpenses(data); // 지출 데이터 설정
+    } catch (error) {
+      console.error("Error fetching daily expenses:", error);
+    }
+  };
 
-  // const fetchDailyExpenses = async () => {
-  //   try {
-  //     const response = await axiosInstance.get(`/trip/${tripId}/expense/date`);
-  //     const data = response.data.data.expenseByDate;
-  //     setDays(data.map((expense) => expense.date)); 
-  //     setExpenses(data); 
-  //   } catch (error) {
-  //     console.error("Error fetching daily expenses:", error);
-  //   }
-  // };
+  // 컴포넌트 마운트 시 API 호출
+  useEffect(() => {
+    if (!tripId) {
+      console.error("Error: tripId is undefined");
+      return;
+    }
+    fetchTotalExpenses();
+    fetchDailyExpenses();
+  }, [tripId]);
 
   return (
     <>
@@ -60,20 +76,14 @@ const Expense = () => {
         </TitleSection>
       </Header>
 
-      {/* ExpBS 컴포넌트 사용 */}
+      {/* ExpBS 컴포넌트 */}
       <ExpBSWrapper>
-        <ExpBS
-          initialAmount={1000000}
-          categories={[
-            { name: "숙소", amount: 300000, color: "#d9d9d9" },
-            { name: "교통", amount: 200000, color: "#c0c0c0" },
-            { name: "식사", amount: 150000, color: "#999999" },
-            { name: "활동", amount: 50000, color: "#666666" },
-            { name: "기타", amount: 50000, color: "#333333" },
-          ]}
-        />
+        <ExpBS initialAmount={totalAmount} categories={categories} />
       </ExpBSWrapper>
+
       <AddExpenseButton onClick={handleAddExpense}>지출 추가하기</AddExpenseButton>
+
+      {/* 날짜별 지출 영역 */}
       <DailyExpenses>
         <h3>일자별 지출</h3>
         <TabsContainer>
@@ -89,12 +99,14 @@ const Expense = () => {
         </TabsContainer>
 
         <ExpenseList>
-          {expenses.map((expense, index) => (
-            <ExpenseListItem key={index}>
-              <span>{expense.name}</span>
-              <span>{expense.amount.toLocaleString()} 원</span>
-            </ExpenseListItem>
-          ))}
+          {expenses
+            .filter((expense) => activeTab === "전체" || expense.date === activeTab)
+            .map((expense, index) => (
+              <ExpenseListItem key={index}>
+                <span>{expense.title}</span>
+                <span>{expense.cost.toLocaleString()} 원</span>
+              </ExpenseListItem>
+            ))}
         </ExpenseList>
       </DailyExpenses>
     </>
@@ -103,6 +115,7 @@ const Expense = () => {
 
 export default Expense;
 
+// 스타일 정의
 const Header = styled.div`
   width: 100%;
   display: flex;
@@ -158,7 +171,7 @@ const ButtonIcon = styled.img`
 const ExpBSWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   padding: 0 16px;
   margin-top: 20px;
 `;
@@ -212,7 +225,7 @@ const AddExpenseButton = styled.button`
   font-weight: bold;
   border: none;
   cursor: pointer;
-  margin: 20px 0; 
+  margin: 20px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
   &:hover {

@@ -17,13 +17,14 @@ import { ExpAdd } from "./expAdd/ExpAdd";
 import Expense from "./Calculate/Expense";
 import CalDetail from "./Calculate/CalDetail";
 import CalTotal from "./Calculate/CalTotal";
-import  Main      from    "./Main/Mainpage" 
+import { MainPage as Main } from "./Main/Mainpage";
 import { Kakaologin } from "./Login/Kakaologin";
 import { Redirect } from "./Login/Redirect";
 import { TravelPictureLook } from "./travelSpecific/TravelPictureLook";
 import { MyPage } from "./mypage/MyPage";
 import { Nickname } from "./Login/Nickname";
 import { OnBoarding } from "./onBording/OnBoarding";
+import MainPage from './Main/Mainpage';
 
 function App() {
   useEffect(() => {
@@ -67,7 +68,7 @@ function App() {
 
           <Route path="/calculate/total" element={<CalTotal />} />
         
-          <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
+          <Route path="/main" element={<MainPage />} />
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>
           <Route path='/pictureLook' element={<TravelPictureLook/>}/>  

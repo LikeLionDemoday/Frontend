@@ -4,17 +4,49 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../api/axios";
 import maindodutch from "../asset/maindodutch.png";
 import newTravelPlanIcon from "../asset/newtravplan.png";
+import Sidebar from "../Components/Sidebar";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const { tripId } = useParams();
-
+  const [tripName, setTripName] = useState("");
   const [recentExpenses, setRecentExpenses] = useState([]);
   const [pastSettlements, setPastSettlements] = useState([]);
   const [remainingCost, setRemainingCost] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
-    // 지난 정산 (in 여행과 관련 없는 최근 정산 목록 조회) -> 이거 홍엽이 다시 수정한다 그래서 리해야함
+    // 1. 여행 목록 조회
+    const fetchTripInfo = async () => {
+      try {
+        const tripResponse = await axiosInstance.get("/trip/search", {
+          params: {
+            name: "", 
+            date: "",  
+            member: ""
+          }
+        });
+  
+        // 상위 한 개 추출
+        const tripData = tripResponse.data.data; 
+        if (tripData.length > 0) {
+          setTripName(tripData[0].name); 
+        }
+      } catch (error) {
+        console.error("여행 정보 조회 실패:", error);
+      }
+    };
+  
+    fetchTripInfo();
+  }, []);
+  
+
+  useEffect(() => {
+    // 2.지난 정산 (in 여행과 관련 없는 최근 정산 목록 조회) -> 이거 홍엽이 다시 수정한다 그래서 리해야함
     const fetchPastSettlements = async () => {
       try {
         const response = await axiosInstance.get("/dutch");
@@ -23,21 +55,20 @@ const MainPage = () => {
         // 상위 2개 추출
         setPastSettlements(dutchData.slice(0, 2));
       } catch (error) {
-        console.error("Error fetching past settlements:", error);
+        console.error("지난 정산 조회 실패:", error);
       }
     };
 
-    // 최근 지출 (In 여행 날짜별 전체 지출 조회)
+    //3. 최근 지출 (In 여행 날짜별 전체 지출 조회)
     const fetchRecentExpenses = async () => {
       try {
         const response = await axiosInstance.get(`/trip/${tripId}/expense/date`);
         const expenses = response.data.data.expenseByDate;
 
-        // 내림차순 정렬 후 상위 3개
-        const recent = expenses.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
-        setRecentExpenses(recent);
+        // 상위 3개 추출
+        setRecentExpenses(expenses.slice(0, 3));
       } catch (error) {
-        console.error("Error fetching recent expenses:", error);
+        console.error("최근 지출 조회 실패:", error);
       }
     };
 
@@ -57,20 +88,21 @@ const MainPage = () => {
   }, [tripId]);  
 
 
-
   return (
     <>
       <Header>
         <Logo>두더치</Logo>
-        <MenuButton>☰</MenuButton>
+        <MenuButton onClick={toggleSidebar}>☰</MenuButton>
       </Header>
+
+      {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar} />}
 
       <ImageContainer>
         <img src={maindodutch} alt="두더지 이미지" />
       </ImageContainer>
 
       <TravelSection onClick={() => navigate(`/travel/detail/${tripId}`)}>
-        <TravelName>여행명</TravelName>
+        <TravelName>{tripName}</TravelName>
         <TravelBalance>잔액 {remainingCost.toLocaleString()} 원</TravelBalance>
       </TravelSection>
 
@@ -107,7 +139,7 @@ const MainPage = () => {
       </TravelManagement>
 
       <PastSettlement>
-        <SectionHeader onClick={() => navigate(`/`)}>
+        <SectionHeader onClick={() => navigate(`/calculate/total`)}>
           <span>지난 정산</span>
           <span>›</span>
         </SectionHeader>
@@ -130,7 +162,6 @@ const MainPage = () => {
 };
 
 export default MainPage;
-
 
 const Header = styled.div`
   width: 100%;
