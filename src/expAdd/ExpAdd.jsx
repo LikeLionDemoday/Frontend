@@ -726,7 +726,7 @@ const PersonItem = styled.div`
         white-space: nowrap; // 추가: 텍스트 한 줄로 유지
         overflow: hidden; // 추가: 넘치는 텍스트 숨김
         text-overflow: ellipsis; // 추가: 말줄임표 표시
-        background-color: red;
+        //background-color: red;
     }
 
     .personalAmountInput {

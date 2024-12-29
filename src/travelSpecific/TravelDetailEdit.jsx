@@ -419,8 +419,7 @@ export function TravelDetailEdit(){
                 place: tripPlace,
                 budget: tripGoalExp,
             }
-            //const response=await axiosInstance.patch(`/trip/${tripId}`, updatedTripData);
-            const response=await axiosInstance.patch(`/trip/1`, updatedTripData);
+            const response=await axiosInstance.patch(`/trip/${tripId}`, updatedTripData);
             console.log(response);
             navigate(`/travel/detail/${tripId}`);
             alert("여행 정보 수정 완료");
@@ -457,8 +456,7 @@ export function TravelDetailEdit(){
 
     const fetchTripData=async()=>{ 
         try{
-            //const response=await axiosInstance.get(`/trip/${tripId}`);
-            const response=await axiosInstance.get(`/trip/1`);
+            const response=await axiosInstance.get(`/trip/${tripId}`);
             setTripName(response.data.data.tripName);
             setTripPlace(response.data.data.place);
             setTripStartDate(response.data.data.startDate);
@@ -520,7 +518,7 @@ export function TravelDetailEdit(){
                             <span className='memberName'>{member.nickName}</span>
                         </MemberItem>
                     ))}
-                    <AddMemberButton onClick={()=>navigate(`/trip/join/${tripId}`)}>
+                    <AddMemberButton onClick={()=>navigate(`/trip/share/${tripId}`)}>
                         <div className='plusCircle'>
                             <p className='plusLogo'>+</p>
                         </div>
