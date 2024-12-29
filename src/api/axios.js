@@ -1,12 +1,20 @@
 import axios from "axios";
 
+// const axiosInstance = axios.create({
+//   baseURL: process.env.REACT_APP_SERVER_PORT,
+//   headers: {
+//     "Content-Type": "application/json",
+//     "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+//   },
+// });
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_PORT,
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+      'Content-Type': 'application/json',
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
   },
 });
+
 
 // export const axiosInstance=axios.create({
 //   baseURL: process.env.REACT_APP_SERVER_PORT,
