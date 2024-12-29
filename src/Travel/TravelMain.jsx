@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as NextButton } from "../icons/rightward.svg";
 import { ReactComponent as PlusButton } from "../icons/plus.svg";
 import { ReactComponent as SearchButton } from "../icons/SearchRight.svg";
+import { ReactComponent as Xbutton } from "../icons/Xbutton.svg";
+import Sidebar from "../Components/Sidebar";
 
 
 const TravelList = () => {
   const navigate = useNavigate();
-  //더미 데이터
+  // const [travelList, setTravelList] = useState([]);
+  //이걸로 바꿔야함
 
+  
+  //더미 데이터
   const [travelList, setTravelList] = useState([
     {
       tripId: 1,
@@ -38,34 +44,23 @@ const TravelList = () => {
     {
       tripId: 5,
       name: "우정 여행 5",
-      startDate: "2024-11-27",
-      endDate: "2024-11-29",
+      startDate: "2024-11-24",
+      endDate: "2024-11-26",
     },
   ]);
 
-  // const [travelList, setTravelList] = useState([]);
+  useEffect(() => {
+    const fetchTravelList = async () => {
+      try {
+        const response = await axios.get("/trip/search"); //PRAMS 없이 요청하면 전체
+        setTravelList(response.data.data.slice(0, 5)); // 첫 5개 항목만 설정
+      } catch (error) {
+        console.error("Error fetching travel list:", error);
+      }
+    };
 
-  // useEffect(() => {
-  //   const fetchTravelList = async () => {
-  //     try {
-  //       const response = await axios.get("/trip/search", {
-  //         headers: {
-  //           Authorization: `Bearer ${access_token}`, // access_token을 여기에 추가
-  //         },
-  //         params: {
-  //           name: "여행명",
-  //           date: "날짜",
-  //           member: "구성원",
-  //         },
-  //       });
-  //       setTravelList(response.data.trips.slice(0, 5)); // 첫 5개 항목만 설정
-  //     } catch (error) {
-  //       console.error("Error fetching travel list:", error);
-  //     }
-  //   };
-
-  //   fetchTravelList();
-  // }, []);
+    fetchTravelList();
+  }, []);
 
    // 빈 항목 추가
    const filledList = [...travelList];
@@ -83,12 +78,25 @@ const TravelList = () => {
         </ButtonBox>
       </ListHeader>
       {filledList.map((travel, index) => {
+        const isEmpty = !travel.name && !travel.startDate && !travel.endDate;
         const formattedStartDate = travel.startDate.slice(5);
         const formattedEndDate = travel.endDate.slice(5);
+
+        const handleClick = () => {
+          if (!isEmpty) {
+            navigate(`/travel/detail/${travel.tripId}`);
+          }
+        };
+
         return (
-          <ListItem key={index}>
+          <ListItem key={index} onClick={handleClick}
+            style={{ 
+              cursor: isEmpty ? 'default' : 'pointer', 
+              borderBottom: isEmpty ? 'none' : '1px solid #ddd',
+              height: isEmpty ? '20px' : 'auto', // 빈 항목일 때 높이 설정
+              }}>
             <Name>{travel.name}</Name>
-            <Date>{formattedStartDate} ~ {formattedEndDate}</Date>
+            {!isEmpty && <Date>{formattedStartDate} ~ {formattedEndDate}</Date>}
           </ListItem>
         );
       })}
@@ -98,41 +106,61 @@ const TravelList = () => {
 
 
 
-const CostList = () => {
+//payerId, perCost 부분 수정 필요
 
+const CostList = () => {
   const navigate = useNavigate();
 
-  const costList = [
-    { name: "카리나", sum: "+40,000원" },
-    { name: "윈터", sum: "-3,300원" },
-    { name: "장원영", sum: "-3,300원" },
-  ];
+  const [costList, setCostList] = useState([
+    { payerId: "카리나", perCost: "+40,000원" },
+    { payerId: "윈터", perCost: "-3,300원" },
+    { payerId: "장원영", perCost: "-3,300원" },
+  ]);
 
-    return (
-      <CostBox> 
-        <ListHeader>
-          <Title>정산 내역</Title>
-          <ButtonBox onClick={ () => navigate("/calculate/total")}>
-            <NextButton/>
-          </ButtonBox>
-        </ListHeader>
-        {costList.map((cost, index) => (
-          <CostItem key={index}>
-            <Name>{cost.name}</Name>
-            <Sum>{cost.sum}</Sum>
-          </CostItem>
-        ))}
-      </CostBox>
-    )
-}
+  useEffect(() => {
+    const fetchCostList = async () => {
+      try {
+        const response = await axios.get("/dutch");
+        if (response.data.isSuccess) {
+          // 상위 3개 항목만 설정
+          setCostList(response.data.data.dutch.slice(0, 3));
+        } else {
+          console.error("데이터를 불러오지 못했습니다.");
+        }
+      } catch (error) {
+        console.error("네트워크 오류:", error);
+      }
+    };
+
+    fetchCostList();
+  }, []);
+
+  return (
+    <CostBox>
+      <ListHeader>
+        <Title>정산 내역</Title>
+        <ButtonBox onClick={() => navigate("/calculate/total")}>
+          <NextButton />
+        </ButtonBox>
+      </ListHeader>
+      {costList.map((cost, index) => (
+        <CostItem key={index}>
+          <Name>{cost.payerId}</Name>
+          <Sum>{cost.perCost}</Sum>
+        </CostItem>
+      ))}
+    </CostBox>
+  );
+};
 
 
 const TravelMain = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+    
     const toggleSidebar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     };
+    
     
   
     return (
@@ -141,12 +169,7 @@ const TravelMain = () => {
           <Logo>두더치</Logo>
           <MenuButton onClick={toggleSidebar}>☰</MenuButton>
         </Header>
-        {isSidebarOpen && (
-        <Sidebar>
-          <CloseButton onClick={toggleSidebar}>닫기</CloseButton>
-          사이드바 내용
-        </Sidebar>
-        )}
+        {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar} />}
         <TravelList/>
         <CostList/>  
       </Container>
@@ -171,7 +194,7 @@ const TravelMain = () => {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    margin-top: 48px;
+    margin-top: 28px;
   `;
 
 
@@ -204,24 +227,6 @@ const TravelMain = () => {
     border: none;
     cursor: pointer;
   `;
-  
-  const Sidebar = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;
-  height: 100%;
-  background-color: #f4f4f4;
-  padding: 20px;
-`;
-
-  const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 20px;
-`;
   
   const Tripbox = styled.div`
   margin-top: 20px;

@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axios.js";
 
 
+
 export function TravelPictureLook(){
-    const navigate = useNavigate();
     const { tripId } = useParams();
     const initialIndex=2;
-
+    const navigate = useNavigate();
     const [tripData,setTripData]=useState([]);
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -31,12 +31,12 @@ export function TravelPictureLook(){
     },[]);
 
 
-    return(
+    return (
         <TravelPictureLookContainor>
             <Title>
                 <div className="tripName">{tripData.data?.tripName}</div>
                 <div className="cancelBtn">
-                   <div className="x" onClick={() => {navigate(`/travel/detail/${tripId}`)}}>X</div>  
+                    <div className="x" onClick={() => navigate(`/travel/detail/${tripId}`)}>X</div>  
                 </div>
             </Title>
 
@@ -53,6 +53,7 @@ export function TravelPictureLook(){
                             <div className="memo">{images[currentIndex].memo}</div>
                         </ImageOverlay>
                     </>
+
                 )}
             </PictureContainor>
 
@@ -67,7 +68,7 @@ export function TravelPictureLook(){
                     ))}
             </PictureListContainor>
         </TravelPictureLookContainor>
-    )
+    );
 }
 
 const TravelPictureLookContainor=styled.div`
@@ -96,13 +97,14 @@ const Title=styled.div`
         font-weight: 600;
         line-height: 150%; /* 24px */
         margin-left: 120px;
+
         //background-color: blue;
     }
 
-    .cancelBtn{
-        width:40px;
-        height:30px;
-        .x{
+    .cancelBtn {
+        width: 40px;
+        height: 30px;
+        .x {
             width: 24px;
             height: 24px;
             color: black;
@@ -111,17 +113,17 @@ const Title=styled.div`
             font-size: 16px;
             font-style: normal;
             font-weight: 600;
-            line-height: 150%; /* 24px */
+            line-height: 150%;
         }
 
         margin-left: 80px;
         //background-color: blue;
     }
-`
+`;
 
-const PictureContainor=styled.div`
-    width:100%;
-    height:550px;
+const PictureContainor = styled.div`
+    width: 100%;
+    height: 550px;
     margin-top: 20px;
     border-radius: 25px;
     box-shadow: 22px 22px 22px 22px rgba(0, 0, 0, 0.06);
@@ -145,7 +147,7 @@ const MainImage = styled.img`
     height: 100%;
     object-fit: cover;
     border-radius: 25px;
-`
+`;
 
 const Thumbnail = styled.img`
     width: 30px;
@@ -160,8 +162,9 @@ const Thumbnail = styled.img`
         transform: scale(1.4);
         border: 2px solid #007AFF;
     `}
-    
+
 `
+
 const ImageOverlay = styled.div`
     width:240px;
     height:72px;

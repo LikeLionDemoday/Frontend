@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<mask id="mask0_1284_3834" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect id="Bounding box" width="24" height="24" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_1284_3834)">
+<g id="Group 108">
+<line id="Line 84" x1="5.6352" y1="5.63604" x2="18.3631" y2="18.364" stroke="#141414" stroke-width="1.2"/>
+<line id="Line 85" x1="18.3637" y1="5.63593" x2="5.63579" y2="18.3639" stroke="#141414" stroke-width="1.2"/>
+</g>
+</g>
+</g>
+</svg>

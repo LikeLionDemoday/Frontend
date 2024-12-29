@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from '../api/axios.js';
 import { useEffect } from "react";
 
+
 const EditContainor=styled.div`
     width:375px;
     height:900px;
@@ -394,6 +395,7 @@ const CompleteBtn=styled.div`
 `
 
 export function TravelDetailEdit(){
+
     const navigate = useNavigate();
     const { tripId } = useParams();
 
@@ -406,8 +408,9 @@ export function TravelDetailEdit(){
     const [tripStartDate,setTripStartDate]=useState("");
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
-
+  
     const patchTripData=async()=>{  //성공 but 인원 정보 수정은 구현안됨
+
         try{
             const updatedTripData={
                 tripName: tripName,
@@ -426,7 +429,7 @@ export function TravelDetailEdit(){
             console.error("Error patching travel data:", error);
         }
     }
-
+    
     const handleRemoveMember = (index) => {
         const updatedMembers = members.filter((_, i) => i !== index);
         setMembers(updatedMembers);

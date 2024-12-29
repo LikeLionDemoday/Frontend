@@ -5,80 +5,96 @@ const ExpBS = ({ initialAmount, categories }) => {
   const totalUsed = categories.reduce((sum, category) => sum + category.amount, 0);
   const balance = initialAmount - totalUsed;
 
-  const totalBarLength = 100; // 진행 바의 총 길이 (%)
-  const segments = categories.map((category) => ({
+  const maxBarLength = 180; // 최대 바 길이(px)
+
+  const categoriesWithWidth = categories.map((category) => ({
     ...category,
-    width: (category.amount / initialAmount) * totalBarLength,
+    barLength: Math.min((category.amount / initialAmount) * maxBarLength, maxBarLength),
   }));
 
-  if (balance >= 0) {
-    segments.push({
-      name: "잔액",
-      amount: balance,
-      color: "#FF5234",
-      width: (balance / initialAmount) * totalBarLength,
-    });
-  }
+  const balanceBarLength = Math.min((balance / initialAmount) * maxBarLength, maxBarLength);
+
+  // 숙소 + 교통비 계산
+  const 숙소교통비 = categories
+    .filter((cat) => cat.name === "숙소" || cat.name === "교통")
+    .reduce((sum, cat) => sum + cat.amount, 0);
 
   return (
-    <Container>
+    <Wrapper>
       <BalanceSection>
-        <BalanceTitle>잔액</BalanceTitle>
-        <BalanceAmount>{balance.toLocaleString()} 원</BalanceAmount>
+        <BalanceTitle>총 지출액</BalanceTitle>
+        <BalanceAmount>{totalUsed.toLocaleString()} 원</BalanceAmount>
         <ProgressBarWrapper>
           <ProgressBarContainer>
-            {segments.map((segment, index) => (
+            {categoriesWithWidth.map((category, index) => (
               <ProgressBarSegment
                 key={index}
-                color={segment.color}
-                width={`${segment.width}%`}
+                color={category.color}
+                width={`${(category.amount / initialAmount) * 100}%`}
               />
             ))}
+            <ProgressBarSegment color="#FF5234" width={`${(balance / initialAmount) * 100}%`} />
+          {/* 눈금 추가 */}
+          <Tick style={{ left: `${(숙소교통비 / initialAmount) * 100}%` }} /> 
+          <Tick style={{ left: `${(totalUsed / initialAmount) * 100}%` }} /> 
+        <Tick style={{ left: `100%` }} /> 
+          
           </ProgressBarContainer>
           <ProgressLabels>
-            <span>(숙소 + 교통비)</span>
-            <span>(총 지출액)</span>
-            <span>(초기 설정 금액)</span>
+            {/* 각 텍스트를 정확히 배치 */}
+            <Label style={{ left: `${(숙소교통비 / initialAmount) * 100}%` }}>
+              {숙소교통비.toLocaleString()}
+            </Label>
+            <Label style={{ left: `${(totalUsed / initialAmount) * 100}%` }}>
+              {totalUsed.toLocaleString()}
+            </Label>
+            <Label style={{ left: `100%` }}>{initialAmount.toLocaleString()}</Label>
           </ProgressLabels>
         </ProgressBarWrapper>
       </BalanceSection>
 
       <CategoryList>
-        {categories.map((category, index) => (
+        {categoriesWithWidth.map((category, index) => (
           <CategoryItem key={index}>
-            <CategoryLabel>
-              <CategoryColor color={category.color} />
-              <span>{category.name}</span>
-            </CategoryLabel>
-            <span>{category.amount.toLocaleString()} 원</span>
+            <CategoryLabel>{category.name}</CategoryLabel>
+            <CategoryProgressBar>
+              <ProgressBarFill
+                color={category.color}
+                width={`${category.barLength}px`}
+              />
+            </CategoryProgressBar>
+            <CategoryAmount>{category.amount.toLocaleString()}</CategoryAmount>
           </CategoryItem>
         ))}
         <CategoryItem>
-          <CategoryLabel>
-            <CategoryColor color="#FF5234" />
-            <span>잔액</span>
-          </CategoryLabel>
-          <span>{balance.toLocaleString()} 원</span>
+          <CategoryLabel>잔액</CategoryLabel>
+          <CategoryProgressBar>
+            <ProgressBarFill color="#FF5234" width={`${balanceBarLength}px`} />
+          </CategoryProgressBar>
+          <CategoryAmount>{balance.toLocaleString()}</CategoryAmount>
         </CategoryItem>
       </CategoryList>
-    </Container>
+    </Wrapper>
   );
 };
 
 export default ExpBS;
 
-const Container = styled.div`
-  width: 100%;
-  max-width: 375px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
+// 스타일 컴포넌트 정의
+const Wrapper = styled.div`
+  width: 95%;
+  flex-shrink: 0;
   border-radius: 16px;
+  background: #fff;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 0 auto; 
+  display: flex;
+  flex-direction: column;
 `;
 
 const BalanceSection = styled.div`
-  text-align: center;
+  text-align: left;
   margin-bottom: 20px;
 `;
 
@@ -110,6 +126,17 @@ const ProgressBarContainer = styled.div`
   background-color: #e0e0e0;
   width: 100%;
   margin: 10px 0;
+  position: relative;
+`;
+
+const Tick = styled.div`
+  position: absolute;
+  bottom: -2px; 
+  width: 1px;
+  height: 10px;
+  background-color: #000; 
+  z-index: 10;
+  transform: translateX(-50%);
 `;
 
 const ProgressBarSegment = styled.div`
@@ -119,11 +146,16 @@ const ProgressBarSegment = styled.div`
 `;
 
 const ProgressLabels = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #888;
+  position: relative;
   width: 100%;
+  height: 15px;
+`;
+
+const Label = styled.span`
+  position: absolute;
+  font-size: 9px;
+  color: #141414;
+  transform: translateX(-100%);
 `;
 
 const CategoryList = styled.div`
@@ -134,19 +166,34 @@ const CategoryItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   font-size: 16px;
 `;
 
 const CategoryLabel = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-size: 14px;
+  color: #141414;
+  flex: 1;
 `;
 
-const CategoryColor = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+const CategoryProgressBar = styled.div`
+  flex: 2;
+  height: 24px;
+  border-radius: 12px;
+  background-color: #e0e0e0;
+  overflow: hidden;
+  margin: 0 10px;
+`;
+
+const ProgressBarFill = styled.div`
+  height: 100%;
   background-color: ${(props) => props.color};
+  width: ${(props) => props.width};
+`;
+
+const CategoryAmount = styled.div`
+  font-size: 14px;
+  color: #141414;
+  text-align: right;
+  flex: 1;
 `;
