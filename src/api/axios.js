@@ -4,16 +4,10 @@ const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_PORT,
   headers: {
     "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
-  return config;
-});
 // export const axiosInstance=axios.create({
 //   baseURL: process.env.REACT_APP_SERVER_PORT,
 // });
@@ -71,5 +65,6 @@ axiosInstance.interceptors.response.use(
     }
     return Promise.reject(error); //401에러 외 다른 에러 처리 가능하게 하기 위해
   })
+
 
 export default axiosInstance;
