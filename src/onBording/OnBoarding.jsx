@@ -1,11 +1,21 @@
 import styled from "styled-components";
 import onboardingPic from "../asset/maindodutch.png";
 import { useRef } from "react";
+import axiosInstance from "../api/axios.js";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import pic1 from "../asset/image1.png";
+import pic2 from "../asset/image2.png";
+import pic3 from "../asset/image3.png";
+import pic4 from "../asset/image4.png";
+
+
 
 export function OnBoarding(){
 
     const secondPageRef = useRef(null);
-
+    const navigate = useNavigate();
     const scrollToSecondPage = () => {
         secondPageRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -20,11 +30,20 @@ export function OnBoarding(){
                 <img src={onboardingPic} alt="onboardingPic" />
                 <CompleteBtn onClick={scrollToSecondPage}>두더치 둘러보기</CompleteBtn>
             </FirstPage>
-            <Bar></Bar>
             <SecondPage ref={secondPageRef}>
-
+                <img src={pic1} alt="pic1" />
             </SecondPage>
-`
+            <ThirdPage>
+                <img src={pic2} alt="pic2" />
+            </ThirdPage>
+            <FourthPage>
+                <img src={pic3} alt="pic3" />
+            </FourthPage>
+            <FifthPage>
+                <img src={pic4} alt="pic4" />
+            </FifthPage>
+            <CompleteBtn className="completeBtn" onClick={()=>navigate("/login")}>두더치 시작하기</CompleteBtn>
+            `
         </OnBordingContainer>
         
     )
@@ -37,7 +56,8 @@ const OnBordingContainer=styled.div`
     flex-direction: column;
     //justify-content: center;
     align-items: center;
-    background-color: green;
+    //background-color: green;
+
 `
 
 const FirstPage=styled.div`
@@ -47,7 +67,7 @@ const FirstPage=styled.div`
     flex-direction: column;
     //justify-content: center;
     align-items: center;
-    background-color: beige;
+    //background-color: beige;
 
     .textBox{
         width: 100%;
@@ -112,6 +132,39 @@ const Bar=styled.div`
 
 const SecondPage=styled.div`
     width: 100%;
-    height: 1050px;
+    height: 791px;
     background-color: red;
+    img{
+        width: 375px;
+        height: 791px;
+    }
+`
+
+const ThirdPage=styled.div`
+    width: 100%;
+    height: 835px;
+    background-color: blue;
+    img{
+        width: 375px;
+        height: 835px;
+    }
+`
+
+const FourthPage=styled.div`
+    width: 100%;
+    height: 735px;
+    background-color: yellow;
+    img{
+        width: 375px;
+        height: 735px;
+    }
+`
+const FifthPage=styled.div`
+    width: 100%;
+    height: 614px;
+    background-color: green;
+    img{
+        width: 375px;
+        height: 814px;
+    }
 `

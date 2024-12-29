@@ -78,24 +78,6 @@ const ProgressLabels = styled.div`
 const BalanceSummaryJewon = ({ initialAmount, categories }) => {
   const totalUsed = categories.reduce((sum, category) => sum + category.amount, 0);
 
-<<<<<<< HEAD
-  const 숙소교통비 = categories
-    .filter((cat) => cat.name === "숙소" || cat.name === "교통")
-    .reduce((sum, cat) => sum + cat.amount, 0);
-  
-  const totalBarLength = 100; // 진행 바의 총 길이 (%)
-  const segments = categories.map((category) => ({
-    ...category,
-    width: (category.amount / initialAmount) * totalBarLength,
-  }));
-
-  if (balance >= 0) {
-    segments.push({
-      name: "잔액",
-      amount: balance,
-      color: "#ff6f61",
-      width: (balance / initialAmount) * totalBarLength,
-=======
     // 누적 위치 계산
     let accumulatedWidth = 0;
     const segments = categories.map((category) => {
@@ -107,36 +89,9 @@ const BalanceSummaryJewon = ({ initialAmount, categories }) => {
         };
         accumulatedWidth += width;
         return segment;
->>>>>>> main
     });
 
-<<<<<<< HEAD
-  return (
-    <SummaryContainer>
-      <BalanceSection>
-        <BalanceTitle>잔액</BalanceTitle>
-        <BalanceAmount>{balance.toLocaleString()} 원</BalanceAmount>
-        <ProgressBarWrapper>
-          <ProgressBarContainer>
-            {segments.map((segment, index) => (
-              <ProgressBarSegment
-                key={index}
-                color={segment.color}
-                width={`${segment.width}%`}
-              />
-            ))}
-          </ProgressBarContainer>
-          <ProgressLabels>
-            <span>{숙소교통비.toLocaleString()} 원</span> {/* 숙소 + 교통비 */}
-            <span>{totalUsed.toLocaleString()} 원</span> {/* 총 지출액 */}
-            <span>{initialAmount.toLocaleString()} 원</span> {/* 초기 설정 금액 */}
-          </ProgressLabels>
-        </ProgressBarWrapper>
-      </BalanceSection>
-    </SummaryContainer>
-  );
-=======
-    console.log("Segments:", segments); // 디버깅용 로그
+    //console.log("Segments:", segments); // 디버깅용 로그
 
     return (
         <SummaryContainer>
@@ -166,7 +121,6 @@ const BalanceSummaryJewon = ({ initialAmount, categories }) => {
             </BalanceSection>
         </SummaryContainer>
     );
->>>>>>> main
 };
 
 export default BalanceSummaryJewon;

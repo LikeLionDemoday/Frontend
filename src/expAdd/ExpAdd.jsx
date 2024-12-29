@@ -39,7 +39,7 @@ export function ExpAdd(){
     const fileInputRef = useRef(null);
     const [expDate, setExpDate] = useState(getCurrentDate()); //지출 날짜
 
-    const [people, setPeople] = useState([]); //여행 인원 목록
+    const [members, setMembers] = useState([]);//여행 인원 목록
     const [imageFiles, setImageFiles] = useState([]);
    
 
@@ -91,10 +91,10 @@ export function ExpAdd(){
         setIsToggled(!isToggled); //여기서 바로 isToggled가 true가 되는건 아님
 
         if(!isToggled && totalAmount){  //그래서 여기서는 !isToggled를 사용해야 함 그래야 true값이 될 수 있음
-            const amount=Math.floor(Number(totalAmount)/persons.length);
+            const amount=Math.floor(Number(totalAmount)/members.length);
             const newAmounts={};
-            persons.forEach(person=>{
-                newAmounts[person.id]=amount;
+            members.forEach(person=>{
+                newAmounts[person.memberId]=amount;
             });
             setPersonalAmounts(newAmounts);
         }
@@ -153,17 +153,13 @@ export function ExpAdd(){
 
     const fetchData=async()=>{
         try{
-            const response=await axiosInstance.get(`/trip/${tripId}/expense`);
-            // const response=await axiosInstance.get(`/trip/1/expense`);
-            setPeople(response.data.members.map(member => ({
-                id: member.memberId,
-                name: member.nickName
-            })));
-            console.log(response.data);
-        }
-        catch(error){
-            console.log(error);
-            console.error('Error fetching data:', error);
+            //const response=await axiosInstance.get(`/trip/${tripId}`);
+            const response=await axiosInstance.get(`/trip/1`);
+            setMembers(response.data.data.members);
+             
+            console.log(response);
+        }catch(error){
+            console.error("Error fetching travel data:", error);
         }
     }
 
@@ -207,7 +203,7 @@ export function ExpAdd(){
             //     headers:{
             //         'Content-Type':'multipart/form-data'
             //     }
-            // });
+            // }); 이게 진짜
 
             const response=await axiosInstance.post(`/trip/1/expense`,formData,{
                 headers:{
@@ -224,23 +220,16 @@ export function ExpAdd(){
         }
     }
 
-    const test=async()=>{
-        const response=await axiosInstance.get(`/test`);
-        console.log(response.data);
-    }
 
     useEffect(() => {
         checkValid();
     }, [personalAmounts, totalAmount]);
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
-
     useEffect(() => {
-        test();
-    }, []);
+        fetchData();
+    }, []);  //이거 해야함
 
+   
     return(
         <ExpAddContainor>
             <TitleAndBtn>
@@ -293,23 +282,23 @@ export function ExpAdd(){
                     <p className="payAmount">세부금액</p>
                 </PeopleTitle>
                 <PeopleList>
-                    {persons.map((person) => ( //persons대신 people 사용
-                        <PersonItem key={person.id}>
+                    {members.map((person) => ( //persons대신 people 사용
+                        <PersonItem key={person.memberId}>
                             <div className="leftSection">
                                 <div 
-                                    className={`checkbox ${selectedPerson===person.id ? 'checked' : ''}`}
-                                    onClick={() => handleCheckboxClick(person.id)}
+                                    className={`checkbox ${selectedPerson===person.memberId ? 'checked' : ''}`}
+                                    onClick={() => handleCheckboxClick(person.memberId)}
                                 >
-                                    {selectedPerson===person.id && <span>✓</span>}
+                                    {selectedPerson===person.memberId && <span>✓</span>}
                                 </div>
-                                <span className="name">{person.name}</span>
+                                <span className="name">{person.nickName}</span>
                             </div>
                             <input 
                                 type="text" 
                                 placeholder="금액 입력" 
                                 className="personalAmountInput" 
-                                value={personalAmounts[person.id] || ''} 
-                                onChange={(e) => handlePersonalAmountChange(person.id, e.target.value)}
+                                value={personalAmounts[person.memberId] || ''} 
+                                onChange={(e) => handlePersonalAmountChange(person.memberId, e.target.value)}
                             />
                         </PersonItem>
                     ))}
@@ -729,10 +718,15 @@ const PersonItem = styled.div`
     }
 
     .name {
+        width:60px;
         flex: 1;
         margin-left: 45px;
         font-size: 16px;
         color: #333;
+        white-space: nowrap; // 추가: 텍스트 한 줄로 유지
+        overflow: hidden; // 추가: 넘치는 텍스트 숨김
+        text-overflow: ellipsis; // 추가: 말줄임표 표시
+        background-color: red;
     }
 
     .personalAmountInput {
@@ -741,7 +735,7 @@ const PersonItem = styled.div`
         font-size: 14px;
         color: #333;
         font-weight: 500;
-        margin-left: 64px;
+        margin-left: 44px;
         border: 1px solid #EEEEEE;
         border-radius: 4px;
         padding: 4px 8px;

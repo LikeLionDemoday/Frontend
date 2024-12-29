@@ -122,45 +122,79 @@ const TravelInfoContainor=styled.div`
     width:331px;
     height:202px;
     //background-color: blue;
-    opacity:0.3;
+    //opacity:0.3;
     margin-top:10px;
     border-bottom: 1px solid var(--Grayscale-1, #E0E0E0);
     display: flex;
     flex-direction: row;
 
     .date{
-        width:70px;
+        width:200px;
         height:13px;
         margin-top: 20px;
-        background-color: blue;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        //align-items: center;
+        color: var(--Grayscale-5, #7A7A7A);
+        font-family: Pretendard;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 18px */
+        //background-color: blue;
     }
 
     .travelTitle{
         width:150px;
         height:31px;
-        background-color:blue;
+        //background-color:blue;
+        p{
+            //color: var(--Grayscale-9, #141414);
+            //color: black;
+            font-family: Pretendard;
+            font-size: 18px;
+            font-weight: bold;
+            color: #141414;
+            line-height: 150%; /* 27px */
+        }
         margin-top: 10px;
     }
 
     .place{
         width:187px;
         height:21px;
-        background-color: blue;
+        //background-color: blue;
         margin-top: 10px;
+        color: var(--Grayscale-5, #7A7A7A);
+        font-family: Pretendard;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 21px */
     }
 `;
 
-const PeopleContainor=styled.div`
-    width: 150px;
+// const PeopleContainor=styled.div`
+//     width: 200px;
+//     height: auto;
+//     margin-top: 20px;
+//     display: grid;
+//     grid-template-columns: repeat(4, 1fr); /* 4개의 동일한 크기의 열 생성 */
+//     gap: 5px; /* 그리드 아이템 사이의 간격 */
+//     align-items: center;
+//     background-color:green;
+// `;
+
+const PeopleContainor = styled.div`
+    width: 200px;  // 너비를 줄임
     height: auto;
-    margin-top: 20px;
-    /* display: flex;
-    justify-content: flex-start;
-    gap:10px; */
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4개의 동일한 크기의 열 생성 */
-    gap: 5px; /* 그리드 아이템 사이의 간격 */
+    margin-top: 10px;  // 상단 여백 줄임
+    display: flex;  // grid 대신 flex 사용
+    flex-wrap: wrap;  // 여러 줄로 나누기
+    gap: 5px;  // 작은 간격 설정
     align-items: center;
+    justify-content: flex-start;  // 왼쪽 정렬
     //background-color:green;
 `;
 
@@ -169,19 +203,9 @@ const PersonCard = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    
+    //min-width: 60px;  // 최소 너비 설정
+    //margin-right: 5px;  // 오른쪽 간격
 
-    /* .avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: lightgray;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-        color: white;
-    } */
 
     .name {
         margin-top: 5px;
@@ -196,7 +220,13 @@ const TripPic=styled.div`
     border-radius: 50%;
     margin-top: 20px;
     margin-left: 50px;
-    background-color: blue;
+
+    img{
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+    }
+    //background-color: blue;
 `;
 
 const ExpContainor=styled.div`
@@ -267,6 +297,12 @@ const PictureCard=styled.div`
     margin: 0;
     border-radius: 12px;
     background-color: beige;
+
+    img{
+        width: 77px;
+        height: 108px;
+        border-radius: 12px;
+    }
 `;
 
 const ModalContainer = styled.div`
@@ -351,13 +387,14 @@ export function TravelDetail(){
     const modalRef = useRef(null);
     const navigate=useNavigate();
     const [tripData,setTripData]=useState([]);
-    const [tripDataExpense,setTripDataExpense]=useState(dummyTripData); //여행 지출 관리
+    const [tripDataExpense,setTripDataExpense]=useState([]); //여행 지출 관리
     const { tripId } = useParams();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); //삭제 확인 창 열기
 
-    const fetchTripDataExpense=async()=>{
+    const fetchTripDataExpense=async()=>{ //이거 해야
         try{
-            const response=await axiosInstance.get(`/trip/${tripId}/expense`);
+            //const response=await axiosInstance.get(`/trip/${tripId}/expense`);
+            const response=await axiosInstance.get(`/trip/1/expense`);
             setTripDataExpense(response.data.data);
             console.log(response);
         }catch(error){
@@ -368,34 +405,24 @@ export function TravelDetail(){
     const categoryOrder = ["숙소", "교통", "식사", "활동", "기타"];
 
     const categoryColors = {
-        "숙소": "#4CAF50",
-        "교통": "#2196F3",
-        "식사": "#FF9800",
-        "간식": "#E91E63",
-        "활동": "#9C27B0",
-        "기타": "#FF5C00"
+        "숙소": "#F0F0F0",
+        "교통": "#C7C7C7",
+        "식사": "#949494",
+        "활동": "#616161",
+        "기타": "#2E2E2E"
     };
 
-    // const formatCategories = (categories) => {
-    //     if (!categories) return [];
-        
-    //     return categories.map(cat => ({
-    //         name: cat.category,
-    //         amount: cat.cost,
-    //         color: categoryColors[cat.category] || "#607D8B" // 기본 색상
-    //     }));
-    // };
 
     const formatCategories = (categories) => {
         if (!categories) return [];
         
         // 정해진 순서대로 카테고리 정렬
         const sortedCategories = categoryOrder.map(orderCat => {
-            const found = categories.find(cat => cat.category === orderCat);
+            const found = categories.find(cat => cat.expenseCategory === orderCat);
             return found ? {
-                name: found.category,
+                name: found.expenseCategory,
                 amount: found.cost,
-                color: categoryColors[found.category]
+                color: categoryColors[found.expenseCategory]
             } : {
                 name: orderCat,
                 amount: 0,
@@ -421,42 +448,43 @@ export function TravelDetail(){
     }
 
     const handlePictureClick = (index) => {
-        navigate(`/travel/pictures/${tripId}`, { 
+        navigate(`/travel/pictureLook/${tripId}`, { 
             state: { selectedIndex: index } // 선택된 인덱스만 전달
         });
     };
 
    
 
-    // const fetchTripData=async()=>{
-    //     try{
-    //         const response=await axios.get(`/trip/${tripId}`);
-    //         setTripData(response.data);
-    //         console.log(response);
-    //     }catch(error){
-    //         console.error("Error fetching travel data:", error);
-    //     }
-    // }
+    const fetchTripData=async()=>{ 
+        try{
+            //const response=await axiosInstance.get(`/trip/${tripId}`);
+            const response=await axiosInstance.get(`/trip/1`);
+            setTripData(response.data);
+            console.log(response);
+        }catch(error){
+            console.error("Error fetching travel data:", error);
+        }
+    }
 
-    // const handleDeleteConfirm=async()=>{
-    //     try{
-    //         const response=await axiosInstance.delete(`/trip/${tripId}`);
-    //         handleItemClick("/tripMain");
-    //         console.log(response);
-    //     }catch(error){
-    //         console.error("Error deleting travel data:", error);
-    //     }
-    // }
+    const handleDeleteConfirm=async()=>{
+        try{
+            const response=await axiosInstance.delete(`/trip/5`);
+            handleItemClick("/tripMain");
+            console.log(response);
+        }catch(error){
+            console.error("Error deleting travel data:", error);
+        }
+    }
     
-    // useEffect(()=>{
-    //     fetchTripData();
-    //     fetchTripDataExpense();
-    // },[]);
+    useEffect(()=>{
+        fetchTripData();
+        fetchTripDataExpense();
+    },[]);
 
-    useEffect(() => {
-        // 데이터 확인용 콘솔 로그
-        console.log("Formatted Categories:", formatCategories(tripDataExpense.categories));
-    }, []);
+    // useEffect(() => {
+    //     // 데이터 확인용 콘솔 로그
+    //     console.log("Formatted Categories:", formatCategories(tripDataExpense.categories));
+    // }, []);
 
 
     return( //만약 다른곳 눌러서 모달창 없애고 싶으면 TravelDetailContainor onClick={closeModal} 추가 
@@ -477,26 +505,26 @@ export function TravelDetail(){
             <TravelInfoContainor>
                 <div className="left">
                     <div className='date'>
-                        {/* <p>{tripData.startDate} ~ {tripData.endDate}</p> */}
+                        <p>{tripData.data?.startDate} ~ {tripData.data?.endDate}</p>
                     </div>
                     <div className='travelTitle'>
-                        {/* <p>{tripData.name}</p> */}
+                        <p>{tripData.data?.tripName}</p>
                     </div>
                     <div className='place'>
-                        {/* <p>{tripData.place}</p> */}
+                        <p>{tripData.data?.place}</p>
                     </div>
                     <PeopleContainor>
-                        {peopleResults.map((person, index) => (
+                        {tripData.data?.members?.map((person, index) => (
                             <PersonCard key={index}>
                                 {/* <div className="avatar">{person.name.charAt(0)}</div> */}
-                                <div className="name">{person.name}</div>
+                                <div className="name">{person.nickName}</div>
                             </PersonCard>
                         ))}
                     </PeopleContainor>
                 </div>
                 <div className="right">
                   <TripPic>
-
+                    <img src={tripData.data?.tripImageUrl}/>
                   </TripPic>
                 </div>
             </TravelInfoContainor>
@@ -511,10 +539,10 @@ export function TravelDetail(){
 
             <PictureContainor>
     
-            {pictureResults.length > 0 ? (
-                pictureResults.map((picture, index) => (
+            {tripData.data?.photos?.length > 0 ? (
+                tripData.data?.photos?.map((picture, index) => (
                     <PictureCard key={index} onClick={()=>handlePictureClick(index)}>
-                        <p>{picture.name}</p>
+                        <img src={picture.photoUrl} alt={`Picture ${index}`} />
                     </PictureCard>
                 ))
             ) : (
@@ -538,8 +566,8 @@ export function TravelDetail(){
 
                     <div className="buttons">
                         <button className="cancel" onClick={() => setShowDeleteConfirm(false)}>취소</button>
-                        <button className="confirm">확인</button>
-                        {/* <button onClick={handleDeleteConfirm}>확인</button> */}
+                        {/* <button className="confirm">확인</button> */}
+                        <button className="confirm" onClick={handleDeleteConfirm}>확인</button>
                     </div>
                     
                 </ConfirmationModal>

@@ -4,9 +4,24 @@ const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_PORT,
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+    "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
   },
 });
+
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     // 매 요청마다 최신 토큰을 가져옴
+//     const token = localStorage.getItem("access_token");
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 
 // export const axiosInstance=axios.create({
 //   baseURL: process.env.REACT_APP_SERVER_PORT,
@@ -65,5 +80,6 @@ axiosInstance.interceptors.response.use(
     }
     return Promise.reject(error); //401에러 외 다른 에러 처리 가능하게 하기 위해
   })
+
 
 export default axiosInstance;
