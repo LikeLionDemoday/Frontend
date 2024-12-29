@@ -53,16 +53,16 @@ function App() {
           <Route path="/tripSearch" element={<TravelSearch />} />
           <Route path="/tripMain" element={<TravelMain />} />
           <Route path="/DummyData" element={<DummyData />} />
-          <Route path='/travel/detail' element={<TravelDetail />} />
+          <Route path='/travel/detail/:tripId' element={<TravelDetail />} />
            {/* 여기 뒤에 /:tripId 추가해야함 */}
 
           <Route path="/travel/detail/edit" element={<TravelDetailEdit />} />
-          <Route path="/expAdd" element={<ExpAdd />} />
+          <Route path="/expAdd/:tripId" element={<ExpAdd />} />
           {/* 여기 뒤에 /:tripId 추가해야함 */}
-          <Route path="/expense" element={<Expense />} />
+          <Route path="/expense/:tripId" element={<Expense />} />
           {/* 여기 뒤에 /:tripId 추가해야함 */}
 
-          <Route path="/calculate/detail" element={<CalDetail />} />
+          <Route path="/calculate/detail/:tripId" element={<CalDetail />} />
           {/* 여기 뒤에 /:tripId 추가해야함 */}
 
           <Route path="/calculate/total" element={<CalTotal />} />
@@ -70,7 +70,7 @@ function App() {
           <Route path="/main" element={<Main />} /> {/* Main 컴포넌트 경로 추가 */}
           <Route path='/login' element={<Kakaologin />} />
           <Route path='/auth/kakao' element={<Redirect/>}/>
-          <Route path='/pictureLook' element={<TravelPictureLook/>}/>  
+          <Route path='/pictureLook/:tripId' element={<TravelPictureLook/>}/>  
           {/* 여기 뒤에 /:tripId 추가해야함 */}
           <Route path='/mypage' element={<MyPage/>}/>
           <Route path='/nickname' element={<Nickname/>}/>

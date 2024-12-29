@@ -71,7 +71,7 @@ return (
           </Circle>
         </CircleWrapper>
         <DateText>{`${userData.startDate} ~ ${userData.endDate}`}</DateText>
-        <TripName>{userData.tripName}</TripName>
+        <TripName>{userData.name}</TripName>
         <Place>{userData.place}</Place>
       </CreateBox>
       <CopyBoxWrapper onClick={handleCopy}>
