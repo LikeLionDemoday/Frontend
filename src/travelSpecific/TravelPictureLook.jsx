@@ -9,7 +9,7 @@ import axiosInstance from "../api/axios.js";
 export function TravelPictureLook(){
     const { tripId } = useParams();
     const initialIndex=2;
-    const navigate = useNavigate();
+    
     const [tripData,setTripData]=useState([]);
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);

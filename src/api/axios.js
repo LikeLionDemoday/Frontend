@@ -8,21 +8,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     // 매 요청마다 최신 토큰을 가져옴
-//     const token = localStorage.getItem("access_token");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-
 // export const axiosInstance=axios.create({
 //   baseURL: process.env.REACT_APP_SERVER_PORT,
 // });
