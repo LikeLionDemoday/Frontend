@@ -91,7 +91,7 @@ const BalanceSummaryJewon = ({ initialAmount, categories }) => {
         return segment;
     });
 
-    console.log("Segments:", segments); // 디버깅용 로그
+    //console.log("Segments:", segments); // 디버깅용 로그
 
     return (
         <SummaryContainer>

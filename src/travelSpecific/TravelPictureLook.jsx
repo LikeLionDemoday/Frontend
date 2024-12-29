@@ -2,16 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 import styled from "styled-components"; 
 import { useNavigate } from "react-router-dom";
-
-import dummyImage1 from '../asset/dummy1.png'; 
-import dummyImage2 from '../asset/dummy2.png';
-import dummyImage3 from '../asset/dummy3.png';
-
-const dummyImages = [
-    { url: dummyImage1 },
-    { url: dummyImage2 },
-    { url: dummyImage3 }
-];
+import axiosInstance from "../api/axios.js";
 
 
 export function TravelPictureLook(){
@@ -23,30 +14,27 @@ export function TravelPictureLook(){
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-    // const fetchTripData=async()=>{
-    //     try{
-    //         const response=await axios.get(`/trip/${tripId}`);
-    //         setTripData(response.data);
-    //         setImages(response.data.photos);
-    //         console.log(response);
-    //     }catch(error){
-    //         console.error("Error fetching travel data:", error);
-    //     }
-    // }
+    const fetchTripData=async()=>{
+        try{
+            //const response=await axios.get(`/trip/${tripId}`);
+            const response=await axiosInstance.get(`/trip/1`);
+            setTripData(response.data);
+            setImages(response.data.data.photos);
+            console.log(response);
+        }catch(error){
+            console.error("Error fetching travel data:", error);
+        }
+    }
     
-    // useEffect(()=>{
-    //     fetchTripData();
-    // },[]);
+    useEffect(()=>{
+        fetchTripData();
+    },[]);
 
-    useEffect(() => {
-        // API 호출 대신 더미 데이터 사용
-        setImages(dummyImages);
-    }, []);
 
     return(
         <TravelPictureLookContainor>
             <Title>
-                <div className="tripName">여행명</div>
+                <div className="tripName">{tripData.data?.tripName}</div>
                 <div className="cancelBtn">
                    <div className="x" onClick={() => {navigate(`/travel/detail/${tripId}`)}}>X</div>  
                 </div>
@@ -54,15 +42,25 @@ export function TravelPictureLook(){
 
             <PictureContainor>
                 {images.length > 0 && (
-                        <MainImage src={images[currentIndex].url} alt="Main travel" />
-                    )}
+                    <>
+                        <MainImage src={images[currentIndex].photoUrl} alt="Main travel" />
+                        <ImageOverlay>
+                            <div className="date">{images[currentIndex].expenseDate}</div>
+                            <div className="description">
+                                <div className="expenseName">{images[currentIndex].title}</div>
+                                <div className="expensePrice">{images[currentIndex].amount?.toLocaleString()}원</div>
+                            </div>
+                            <div className="memo">{images[currentIndex].memo}</div>
+                        </ImageOverlay>
+                    </>
+                )}
             </PictureContainor>
 
             <PictureListContainor>
                 {images.map((image, index) => (
                         <Thumbnail 
                             key={index}
-                            src={image.url}
+                            src={image.photoUrl}
                             isSelected={index === currentIndex}
                             onClick={() => setCurrentIndex(index)}
                         />
@@ -83,11 +81,13 @@ const Title=styled.div`
     margin-top:68px;
     //background-color: beige;
     display: flex;
-    //justify-content: center;
-    //align-items: center;
+    /* flex-direction: row;
+    justify-content: center;
+    align-items: center; */
+    //background-color: red;
     
     .tripName{
-        width:100px;
+        width:160px;
         color: var(--Grayscale-9, #141414);
         text-align: center;
         font-family: "Pretendard Variable";
@@ -95,7 +95,7 @@ const Title=styled.div`
         font-style: normal;
         font-weight: 600;
         line-height: 150%; /* 24px */
-        margin-left: 135px;
+        margin-left: 120px;
         //background-color: blue;
     }
 
@@ -114,7 +114,7 @@ const Title=styled.div`
             line-height: 150%; /* 24px */
         }
 
-        margin-left: 100px;
+        margin-left: 80px;
         //background-color: blue;
     }
 `
@@ -161,4 +161,90 @@ const Thumbnail = styled.img`
         border: 2px solid #007AFF;
     `}
     
+`
+const ImageOverlay = styled.div`
+    width:240px;
+    height:72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 157px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    //background-color: red;
+
+    .date{
+        width:200px;
+        height:15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--Grayscale-9, #141414);
+        text-align: center;
+        font-family: Pretendard;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 15px */
+    }
+    .description{
+        width:200px;
+        height:15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        //background-color: red;
+        color: var(--Grayscale-9, #141414);
+        font-family: Pretendard;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 150%;
+        margin-top: 3px;
+        gap: 2px;
+
+        .expenseName{
+            width:60px;
+            height:15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 20px;
+            //background-color: blue;
+        }
+
+        .expensePrice{
+            width:80px;
+            height:15px;
+            display: flex;
+            //justify-content: center;
+            align-items: center;
+            //background-color: green;
+        }
+    }
+
+    .memo{
+        width:260px;
+        //height:15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--Grayscale-9, #141414);
+        text-align: center;
+        font-family: Pretendard;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 165%; /* 16.5px */
+        margin-top: 3px;
+        //background-color: blue;
+    }
+
 `

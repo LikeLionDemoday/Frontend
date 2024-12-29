@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom"
 import maindodutch from "../asset/maindodutch.png"
+import axiosInstance from "../api/axios.js";
+import { useEffect } from "react";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -157,6 +159,7 @@ const MainPage = () => {
     { name: "구성원", amount: "- 3,300원" },
     { name: "구성원", amount: "+ 40,000원" },
   ];
+
 
   return (
     <MainContainer>

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from '../api/axios.js';
+import { useEffect } from "react";
 
 const EditContainor=styled.div`
     width:375px;
@@ -132,13 +133,16 @@ const TravelInfoEdit=styled.div`
             height:32px;
             border: none;
             outline: none;
-            background-color: transparent;
-            color: black;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 150%;
+            color: var(--Grayscale-9, #141414);
             text-align: center;
+            font-family: Pretendard;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 150%; /* 27px */
+            letter-spacing: 0.36px;
+
+
             margin: 0;
             padding: 0;
             //background-color: red;
@@ -393,13 +397,9 @@ export function TravelDetailEdit(){
     const navigate = useNavigate();
     const { tripId } = useParams();
 
-    const [members, setMembers] = useState([
-        "김김김",
-        "이이이",
-        "박박박",
-        "최최최",
-        "이제원",
-    ]);
+    
+
+    const [members, setMembers] = useState([]);
 
     const [tripName,setTripName]=useState("");
     const [tripPlace,setTripPlace]=useState("");
@@ -407,16 +407,17 @@ export function TravelDetailEdit(){
     const [tripEndDate,setTripEndDate]=useState("");
     const [tripGoalExp,setTripGoalExp]=useState("");
 
-    const patchTripData=async()=>{
+    const patchTripData=async()=>{  //성공 but 인원 정보 수정은 구현안됨
         try{
             const updatedTripData={
-                name: tripName,
-                place: tripPlace,
+                tripName: tripName,
                 startDate: tripStartDate,
                 endDate: tripEndDate,
-                goalExp: tripGoalExp,
+                place: tripPlace,
+                budget: tripGoalExp,
             }
-            const response=await axiosInstance.patch(`/trip/${tripId}`, updatedTripData);
+            //const response=await axiosInstance.patch(`/trip/${tripId}`, updatedTripData);
+            const response=await axiosInstance.patch(`/trip/1`, updatedTripData);
             console.log(response);
             navigate(`/travel/detail/${tripId}`);
             alert("여행 정보 수정 완료");
@@ -451,24 +452,26 @@ export function TravelDetailEdit(){
         setTripGoalExp(e.target.value);
     }
 
-    // const fetchTripData=async()=>{
-    //     try{
-    //         const response=await axiosInstance.get(`/trip/${tripId}`);
-    //         setTripName(response.data.name);
-    //         setTripPlace(response.data.place);
-    //         setTripStartDate(response.data.startDate);
-    //         setTripEndDate(response.data.endDate);
-    //         setTripGoalExp(response.data.goalExp);
+    const fetchTripData=async()=>{ 
+        try{
+            //const response=await axiosInstance.get(`/trip/${tripId}`);
+            const response=await axiosInstance.get(`/trip/1`);
+            setTripName(response.data.data.tripName);
+            setTripPlace(response.data.data.place);
+            setTripStartDate(response.data.data.startDate);
+            setTripEndDate(response.data.data.endDate);
+            setTripGoalExp(response.data.data.budget);
+            setMembers(response.data.data.members);
              
-    //         console.log(response);
-    //     }catch(error){
-    //         console.error("Error fetching travel data:", error);
-    //     }
-    // }
+            console.log(response);
+        }catch(error){
+            console.error("Error fetching travel data:", error);
+        }
+    }
     
-    // useEffect(()=>{
-    //     fetchTripData();
-    // },[]);
+    useEffect(()=>{
+        fetchTripData();
+    },[]);
 
     return(
         <EditContainor>
@@ -511,7 +514,7 @@ export function TravelDetailEdit(){
                             {/* <div className='avatar'>
 
                             </div> */}
-                            <span className='memberName'>{member}</span>
+                            <span className='memberName'>{member.nickName}</span>
                         </MemberItem>
                     ))}
                     <AddMemberButton onClick={()=>navigate(`/trip/join/${tripId}`)}>
@@ -523,7 +526,7 @@ export function TravelDetailEdit(){
                 </MembersSection>
             </TravelInfoEdit>
 
-            <CompleteBtn onClick={patchTripData}>
+            <CompleteBtn onClick={()=>patchTripData()}>
                 <p>완료</p>
             </CompleteBtn>
 
