@@ -3,7 +3,7 @@
     "rewrites": [
       {
         "source": "/api/(.*)",
-        "destination": "http://ec2-3-39-30-198.ap-northeast-2.compute.amazonaws.com/$1"
+        "destination": "http://ec2-3-39-30-198.ap-northeast-2.compute.amazonaws.com:8080/$1"
       }
     ]
   }
