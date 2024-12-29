@@ -7,18 +7,15 @@ import TransactionCard from "../Components/TransactionCard";
 const CalTotal = () => {
   const navigate = useNavigate();
   const [settlements, setSettlements] = useState([]);
-  const [selectedSettlement, setSelectedSettlement] = useState(null);
 
   // 최근 정산 목록 조회
   const fetchRecentSettlements = async () => {
     try {
       const response = await axiosInstance.get("/dutch");
-      const dutchData = response.data.data.dutch.slice(0, 5); 
+      const dutchData = response.data.data.dutch.slice(0, 5); // 상위 5개만 가져오기
       const mappedSettlements = dutchData.map((item) => ({
         id: item.id,
-        payerId: item.payer.payerId,
         payerName: item.payer.payerNickName,
-        payeeId: item.payee.payeeId,
         payeeName: item.payee.payeeNickName,
         perCost: item.perCost,
         isCompleted: item.isCompleted,
@@ -30,35 +27,14 @@ const CalTotal = () => {
   };
 
   // 정산 상태 변경 (토글 ON/OFF)
-  const updateSettlementStatus = async (tripId, dutchId, isCompleted) => {
+  const updateSettlementStatus = async (dutchId, isCompleted) => {
     try {
-      await axiosInstance.patch(`/trip/${tripId}/dutch/${dutchId}`, {
+      await axiosInstance.patch(`/dutch/${dutchId}`, {
         isCompleted: isCompleted,
       });
       fetchRecentSettlements(); // 변경 후 목록 새로고침
     } catch (error) {
       console.error("Error updating settlement status:", error);
-    }
-  };
-
-  // 정산 세부 내역 조회
-  const fetchSettlementDetails = async (tripId, dutchId) => {
-    try {
-      const response = await axiosInstance.get(`/trip/${tripId}/dutch/${dutchId}`);
-      setSelectedSettlement(response.data.data);
-    } catch (error) {
-      console.error("Error fetching settlement details:", error);
-    }
-  };
-
-  // 정산 계산 요청
-  const calculateSettlements = async (tripId) => {
-    try {
-      const response = await axiosInstance.post(`/trip/${tripId}/dutch/calculate`);
-      console.log("Settlement Calculation Result:", response.data.data);
-      fetchRecentSettlements(); // 계산 후 목록 새로고침
-    } catch (error) {
-      console.error("Error calculating settlements:", error);
     }
   };
 
@@ -68,13 +44,8 @@ const CalTotal = () => {
   }, []);
 
   // 토글 상태 변경 핸들러
-  const handleToggleChange = (tripId, dutchId, currentStatus) => {
-    updateSettlementStatus(tripId, dutchId, !currentStatus);
-  };
-
-  // 카드 클릭 핸들러 (세부 내역 조회)
-  const handleCardClick = (tripId, dutchId) => {
-    fetchSettlementDetails(tripId, dutchId);
+  const handleToggleChange = (dutchId, currentStatus) => {
+    updateSettlementStatus(dutchId, !currentStatus);
   };
 
   return (
@@ -96,9 +67,8 @@ const CalTotal = () => {
             ]}
             isToggleOn={settlement.isCompleted}
             onToggleChange={() =>
-              handleToggleChange(settlement.payerId, settlement.id, settlement.isCompleted)
+              handleToggleChange(settlement.id, settlement.isCompleted)
             }
-            onCardClick={() => handleCardClick(settlement.payerId, settlement.id)}
           />
         ))}
       </TransactionCardWrapper>
