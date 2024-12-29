@@ -12,9 +12,29 @@ const Expense = () => {
   const [categories, setCategories] = useState([]); // 카테고리별 지출
   const [days, setDays] = useState([]); // 날짜별 탭
   const [expenses, setExpenses] = useState([]); // 지출 내역
-
+  
   const navigate = useNavigate();
   const { tripId } = useParams(); // URL에서 tripId 가져오기
+
+
+  // 정산 버튼 클릭 시 POST API 호출
+const handleSettleCalculate = async () => {
+  try {
+    const response = await axiosInstance.post(`/trip/${tripId}/dutch/calculate`);
+
+    if (response.data.isSuccess) {
+      // 정산 상세 페이지 ㄱㄱㄱ
+      navigate(`/calculate/detail/${tripId}`);
+    }
+  } catch (error) {
+    if (error.response?.status === 404) {
+      console.error("해당 여행을 찾을 수 없습니다.");
+    } else {
+      console.error("정산 계산 실패:", error);
+    }
+  }
+};
+
 
   // 뒤로가기 버튼 클릭 핸들러
   const handleBackClick = () => {
@@ -69,7 +89,7 @@ const Expense = () => {
         </BackButtonWrapper>
         <TitleSection>
           <Title>전체 지출</Title>
-          <SettleButton onClick={() => navigate(`/calculate/detail/${tripId}`)}>
+          <SettleButton onClick={handleSettleCalculate}>
             <ButtonText>정산하기</ButtonText>
             <ButtonIcon src={calButtonIcon} alt="정산하기 화살표" />
           </SettleButton>
