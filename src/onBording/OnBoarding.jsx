@@ -50,7 +50,7 @@ export function OnBoarding(){
 }
 
 const OnBordingContainer=styled.div`
-    width: 100%;
+    width: 375px;
     //height: 100%;
     display: flex;
     flex-direction: column;
