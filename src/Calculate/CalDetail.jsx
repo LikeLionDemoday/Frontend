@@ -1,23 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"; 
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import TransactionCard from "../Components/TransactionCard";
 import axiosInstance from "../api/axios";
 
-const CalDetail = () => {
+const CalDetail = ({ memberId }) => {
   const navigate = useNavigate();
-  const { tripId } = useParams(); // URL에서 tripId를 가져옴
+  const { tripId } = useParams(); 
 
-  const [isToggleOn, setIsToggleOn] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [transactions, setTransactions] = useState([]); // 정산 목록 상태
-  const [selectedDutchId, setSelectedDutchId] = useState(null); // 선택된 정산 ID
+  const [transactions, setTransactions] = useState([]); 
+  const [selectedDutchId, setSelectedDutchId] = useState(null); 
 
   // 정산 목록 조회 API 호출
   const fetchSettlementList = async () => {
     try {
       const response = await axiosInstance.get(`/trip/${tripId}/dutch`);
-      setTransactions(response.data.data.dutch); // 정산 목록 저장
+      const allDutchData = response.data.data.dutch;
+
+      // 내 ID를 기준으로 필터링????
+      const filteredTransactions = allDutchData
+        .map((item) => {
+          if (item.payer.payerId.toString() === memberId) {
+            // 내가 돈을 보내야 하는 경우
+            return {
+              id: item.id,
+              name: item.payee.payeeNickName,
+              amount: item.perCost,
+              isCompleted: item.isCompleted,
+              type: "send", // 보낼 금액
+            };
+          } else if (item.payee.payeeId.toString() === memberId) {
+            // 내가 돈을 받아야 하는 경우
+            return {
+              id: item.id,
+              name: item.payer.payerNickName,
+              amount: item.perCost,
+              isCompleted: item.isCompleted,
+              type: "receive", // 받을 금액
+            };
+          }
+          return null; // 빼야대나
+        })
+        .filter(Boolean); 
+
+      setTransactions(filteredTransactions); 
     } catch (error) {
       console.error("Error fetching settlement list:", error);
     }
@@ -39,7 +66,7 @@ const CalDetail = () => {
       await axiosInstance.patch(`/trip/${tripId}/dutch/${dutchId}`, {
         isCompleted: true,
       });
-      fetchSettlementList(); // 정산 목록 다시 로드
+      fetchSettlementList(); // 리 로드
     } catch (error) {
       console.error("Error marking settlement complete:", error);
     }
@@ -51,27 +78,16 @@ const CalDetail = () => {
       await axiosInstance.patch(`/trip/${tripId}/dutch/${dutchId}`, {
         isCompleted: false,
       });
-      fetchSettlementList(); // 정산 목록 다시 로드
+      fetchSettlementList(); // 리 로드
     } catch (error) {
       console.error("Error cancelling settlement:", error);
-    }
-  };
-
-  // 정산 계산 API 호출
-  const calculateSettlements = async () => {
-    try {
-      const response = await axiosInstance.post(`/trip/${tripId}/dutch/calculate`);
-      console.log("Calculated Settlement:", response.data.data);
-      fetchSettlementList(); // 계산 후 목록 새로고침
-    } catch (error) {
-      console.error("Error calculating settlements:", error);
     }
   };
 
   // 초기 데이터 로드
   useEffect(() => {
     fetchSettlementList();
-  }, [tripId]);
+  }, [tripId, memberId]);
 
   const handleToggleChange = (dutchId, currentStatus) => {
     if (currentStatus) {
@@ -97,11 +113,13 @@ const CalDetail = () => {
         {transactions.map((transaction) => (
           <TransactionCard
             key={transaction.id}
-            name={transaction.payeeName}
-            amount={transaction.perCost}
-            date={`${transaction.startDate} - ${transaction.endDate}`}
+            name={transaction.name}
+            amount={transaction.amount}
+            date={`정산 ID: ${transaction.id}`}
             transactions={[
-              { from: "나", to: transaction.payeeName, amount: transaction.perCost },
+              transaction.type === "send"
+                ? { from: "나", to: transaction.name, amount: transaction.amount }
+                : { from: transaction.name, to: "나", amount: transaction.amount },
             ]}
             isToggleOn={transaction.isCompleted}
             isExpanded={isExpanded && selectedDutchId === transaction.id}
