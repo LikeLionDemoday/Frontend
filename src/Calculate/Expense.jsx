@@ -62,7 +62,7 @@ const handleSettleCalculate = async () => {
   const fetchDailyExpenses = async () => {
     try {
       const response = await axiosInstance.get(`/trip/${tripId}/expense/date`);
-      const data = response.data.data.expenseByDate;
+      const data = response.data.data;
       setDays(data.map((expense) => expense.date)); // 날짜 목록 생성
       setExpenses(data); // 지출 데이터 설정
     } catch (error) {

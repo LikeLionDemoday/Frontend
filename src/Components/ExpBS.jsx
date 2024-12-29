@@ -2,22 +2,22 @@ import React from "react";
 import styled from "styled-components";
 
 const ExpBS = ({ initialAmount, categories }) => {
-  const totalUsed = categories.reduce((sum, category) => sum + category.amount, 0);
+  const totalUsed = categories.reduce((sum, category) => sum + category.cost, 0);
   const balance = initialAmount - totalUsed;
 
   const maxBarLength = 180; // 최대 바 길이(px)
 
   const categoriesWithWidth = categories.map((category) => ({
     ...category,
-    barLength: Math.min((category.amount / initialAmount) * maxBarLength, maxBarLength),
+    barLength: Math.min((category.cost / initialAmount) * maxBarLength, maxBarLength),
   }));
 
   const balanceBarLength = Math.min((balance / initialAmount) * maxBarLength, maxBarLength);
 
   // 숙소 + 교통비 계산
   const 숙소교통비 = categories
-    .filter((cat) => cat.name === "숙소" || cat.name === "교통")
-    .reduce((sum, cat) => sum + cat.amount, 0);
+    .filter((cat) => cat.expenseCategory === "숙소" || cat.expenseCategory === "교통")
+    .reduce((sum, cat) => sum + cat.cost, 0);
 
   return (
     <Wrapper>
@@ -30,14 +30,14 @@ const ExpBS = ({ initialAmount, categories }) => {
               <ProgressBarSegment
                 key={index}
                 color={category.color}
-                width={`${(category.amount / initialAmount) * 100}%`}
+                width={`${(category.cost / initialAmount) * 100}%`}
               />
             ))}
             <ProgressBarSegment color="#FF5234" width={`${(balance / initialAmount) * 100}%`} />
           {/* 눈금 추가 */}
           <Tick style={{ left: `${(숙소교통비 / initialAmount) * 100}%` }} /> 
           <Tick style={{ left: `${(totalUsed / initialAmount) * 100}%` }} /> 
-        <Tick style={{ left: `100%` }} /> 
+          <Tick style={{ left: `100%` }} /> 
           
           </ProgressBarContainer>
           <ProgressLabels>
@@ -56,14 +56,14 @@ const ExpBS = ({ initialAmount, categories }) => {
       <CategoryList>
         {categoriesWithWidth.map((category, index) => (
           <CategoryItem key={index}>
-            <CategoryLabel>{category.name}</CategoryLabel>
+            <CategoryLabel>{category.expenseCategory}</CategoryLabel>
             <CategoryProgressBar>
               <ProgressBarFill
                 color={category.color}
                 width={`${category.barLength}px`}
               />
             </CategoryProgressBar>
-            <CategoryAmount>{category.amount.toLocaleString()}</CategoryAmount>
+            <CategoryAmount>{category.cost.toLocaleString()}</CategoryAmount>
           </CategoryItem>
         ))}
         <CategoryItem>

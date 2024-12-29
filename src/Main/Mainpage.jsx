@@ -8,7 +8,7 @@ import Sidebar from "../Components/Sidebar";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const { tripId } = useParams();
+  const [tripId, setTripId] = useState(1);
   const [tripName, setTripName] = useState("");
   const [recentExpenses, setRecentExpenses] = useState([]);
   const [pastSettlements, setPastSettlements] = useState([]);
@@ -23,18 +23,13 @@ const MainPage = () => {
     // 1. 여행 목록 조회
     const fetchTripInfo = async () => {
       try {
-        const tripResponse = await axiosInstance.get("/trip/search", {
-          params: {
-            name: "", 
-            date: "",  
-            member: ""
-          }
-        });
+        const tripResponse = await axiosInstance.get("/trip/search");
   
         // 상위 한 개 추출
-        const tripData = tripResponse.data.data; 
+        const tripData = tripResponse.data.data;
         if (tripData.length > 0) {
-          setTripName(tripData[0].name); 
+          setTripName(tripData[0].name);
+          setTripId(tripData[0].tripId);
         }
       } catch (error) {
         console.error("여행 정보 조회 실패:", error);
@@ -62,8 +57,8 @@ const MainPage = () => {
     //3. 최근 지출 (In 여행 날짜별 전체 지출 조회)
     const fetchRecentExpenses = async () => {
       try {
-        const response = await axiosInstance.get(`/trip/${tripId}/expense/date`);
-        const expenses = response.data.data.expenseByDate;
+        const response = await axiosInstance.get(`/trip/1/expense/date`);
+        const expenses = response.data.data;
 
         // 상위 3개 추출
         setRecentExpenses(expenses.slice(0, 3));
@@ -114,8 +109,8 @@ const MainPage = () => {
         {recentExpenses.length > 0 ? (
           recentExpenses.map((expense, index) => (
             <ExpenseItem key={index}>
-              <span>Payer ID: {expense.payerId}</span>
-              <span>{expense.perCost.toLocaleString()} 원</span>
+              <span>{expense.title}</span>
+              <span>{expense.cost.toLocaleString()} 원</span>
             </ExpenseItem>
           ))
         ) : (

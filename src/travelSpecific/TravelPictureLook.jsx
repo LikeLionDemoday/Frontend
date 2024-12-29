@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useState,useEffect } from "react";
 import styled from "styled-components"; 
 import { useNavigate } from "react-router-dom";
@@ -8,8 +8,9 @@ import axiosInstance from "../api/axios.js";
 
 export function TravelPictureLook(){
     const { tripId } = useParams();
-    const initialIndex=2;
-    
+    const location = useLocation();
+    const initialIndex = location.state?.selectedIndex || 0;
+
     const [tripData,setTripData]=useState([]);
     const [images,setImages]=useState([]);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -17,8 +18,7 @@ export function TravelPictureLook(){
     const navigate = useNavigate();
     const fetchTripData=async()=>{
         try{
-            //const response=await axios.get(`/trip/${tripId}`);
-            const response=await axiosInstance.get(`/trip/1`);
+            const response=await axiosInstance.get(`/trip/${tripId}`);
             setTripData(response.data);
             setImages(response.data.data.photos);
             console.log(response);
@@ -225,7 +225,7 @@ const ImageOverlay = styled.div`
         }
 
         .expensePrice{
-            width:80px;
+            width:100px;
             height:15px;
             display: flex;
             //justify-content: center;

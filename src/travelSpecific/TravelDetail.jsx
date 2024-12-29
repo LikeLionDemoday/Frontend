@@ -393,8 +393,7 @@ export function TravelDetail(){
 
     const fetchTripDataExpense=async()=>{ //이거 해야
         try{
-            //const response=await axiosInstance.get(`/trip/${tripId}/expense`);
-            const response=await axiosInstance.get(`/trip/1/expense`);
+            const response=await axiosInstance.get(`/trip/${tripId}/expense`);
             setTripDataExpense(response.data.data);
             console.log(response);
         }catch(error){
@@ -448,7 +447,7 @@ export function TravelDetail(){
     }
 
     const handlePictureClick = (index) => {
-        navigate(`/travel/pictureLook/${tripId}`, { 
+        navigate(`/pictureLook/${tripId}`, { 
             state: { selectedIndex: index } // 선택된 인덱스만 전달
         });
     };
@@ -457,8 +456,7 @@ export function TravelDetail(){
 
     const fetchTripData=async()=>{ 
         try{
-            //const response=await axiosInstance.get(`/trip/${tripId}`);
-            const response=await axiosInstance.get(`/trip/1`);
+            const response=await axiosInstance.get(`/trip/${tripId}`);
             setTripData(response.data);
             console.log(response);
         }catch(error){
@@ -468,7 +466,7 @@ export function TravelDetail(){
 
     const handleDeleteConfirm=async()=>{
         try{
-            const response=await axiosInstance.delete(`/trip/5`);
+            const response=await axiosInstance.delete(`/trip/${tripId}`);
             handleItemClick("/tripMain");
             console.log(response);
         }catch(error){
