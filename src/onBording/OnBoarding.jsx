@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import onboardingPic from "../asset/maindodutch.png";
+import onboardingPic from "../asset/onboardingPic.svg";
 import { useRef } from "react";
 import axiosInstance from "../api/axios.js";
 import { useEffect } from "react";
