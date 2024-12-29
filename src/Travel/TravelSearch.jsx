@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as BackwardIcon } from "../icons/backward.svg";
 import { ReactComponent as SearchIcon } from "../icons/search.svg";
-import axios from "axios";
+import axiosInstance from "../api/axios.js";
 
 const TravelSearch = () => {
 
@@ -37,10 +37,10 @@ const TravelSearch = () => {
 
     useEffect(() => {
         // 데이터 가져오기
-        axios.get("/trip/search")
+        axiosInstance.get("/trip/search")
           .then(response => {
             if (response.status === 200) {
-              setTravelList(response.data.trips);
+              setTravelList(response.data.data);
             }
           })
           .catch(error => {
@@ -51,7 +51,7 @@ const TravelSearch = () => {
     // 검색 함수, Enter 눌렀을 때 검색, 클릭할때 검색
     const handleSearch = () => {
         const filteredResults = travelList.filter((travel) =>
-          travel.name.includes(query) || travel.startDate.slice(0, 4) === query
+          travel.tripName.includes(query) || travel.startDate.slice(0, 4) === query
         );
         setResults(filteredResults);
       };
@@ -99,7 +99,7 @@ const TravelSearch = () => {
 
     return (
       <Item onClick={handleClick}>
-        <ListName>{travel.name}</ListName>
+        <ListName>{travel.tripName}</ListName>
         <ListDate>
           {travel.startDate} - {travel.endDate}
         </ListDate>

@@ -7,55 +7,56 @@ import { ReactComponent as PlusButton } from "../icons/plus.svg";
 import { ReactComponent as SearchButton } from "../icons/SearchRight.svg";
 import { ReactComponent as Xbutton } from "../icons/Xbutton.svg";
 import Sidebar from "../Components/Sidebar";
+import axiosInstance from "../api/axios.js";
 
 
 const TravelList = () => {
   const navigate = useNavigate();
-  // const [travelList, setTravelList] = useState([]);
+  const [travelList, setTravelList] = useState([]);
   //이걸로 바꿔야함
 
   
   //더미 데이터
-  const [travelList, setTravelList] = useState([
-    {
-      tripId: 1,
-      name: "우정 여행 1",
-      startDate: "2024-11-15",
-      endDate: "2024-11-17",
-    },
-    {
-      tripId: 2,
-      name: "우정 여행 2",
-      startDate: "2024-11-18",
-      endDate: "2024-11-20",
-    },
-    {
-      tripId: 3,
-      name: "우정 여행 3",
-      startDate: "2024-11-21",
-      endDate: "2024-11-23",
-    },
-    {
-      tripId: 4,
-      name: "우정 여행 4",
-      startDate: "2024-11-24",
-      endDate: "2024-11-26",
-    },
-    {
-      tripId: 5,
-      name: "우정 여행 5",
-      startDate: "2024-11-24",
-      endDate: "2024-11-26",
-    },
-  ]);
+  // const [travelList, setTravelList] = useState([
+  //   {
+  //     tripId: 1,
+  //     name: "우정 여행 1",
+  //     startDate: "2024-11-15",
+  //     endDate: "2024-11-17",
+  //   },
+  //   {
+  //     tripId: 2,
+  //     name: "우정 여행 2",
+  //     startDate: "2024-11-18",
+  //     endDate: "2024-11-20",
+  //   },
+  //   {
+  //     tripId: 3,
+  //     name: "우정 여행 3",
+  //     startDate: "2024-11-21",
+  //     endDate: "2024-11-23",
+  //   },
+  //   {
+  //     tripId: 4,
+  //     name: "우정 여행 4",
+  //     startDate: "2024-11-24",
+  //     endDate: "2024-11-26",
+  //   },
+  //   {
+  //     tripId: 5,
+  //     name: "우정 여행 5",
+  //     startDate: "2024-11-24",
+  //     endDate: "2024-11-26",
+  //   },
+  // ]);
 
   useEffect(() => {
     const fetchTravelList = async () => {
       try {
-        const response = await axios.get("/trip/search"); //PRAMS 없이 요청하면 전체
+        const response = await axiosInstance.get("/trip/search"); //PRAMS 없이 요청하면 전체
         setTravelList(response.data.data.slice(0, 5)); // 첫 5개 항목만 설정
       } catch (error) {
-        console.error("Error fetching travel list:", error);
+        console.error("해당 여행 목록 없음!", error);
       }
     };
 
@@ -65,7 +66,7 @@ const TravelList = () => {
    // 빈 항목 추가
    const filledList = [...travelList];
    while (filledList.length < 5) {
-     filledList.push({ name: "", startDate: "", endDate: "" });
+     filledList.push({ tripName: "", startDate: "", endDate: "" });
    }
 
   return (
@@ -78,7 +79,7 @@ const TravelList = () => {
         </ButtonBox>
       </ListHeader>
       {filledList.map((travel, index) => {
-        const isEmpty = !travel.name && !travel.startDate && !travel.endDate;
+        const isEmpty = !travel.tripName && !travel.startDate && !travel.endDate;
         const formattedStartDate = travel.startDate.slice(5);
         const formattedEndDate = travel.endDate.slice(5);
 
@@ -95,7 +96,7 @@ const TravelList = () => {
               borderBottom: isEmpty ? 'none' : '1px solid #ddd',
               height: isEmpty ? '20px' : 'auto', // 빈 항목일 때 높이 설정
               }}>
-            <Name>{travel.name}</Name>
+            <Name>{travel.tripName}</Name>
             {!isEmpty && <Date>{formattedStartDate} ~ {formattedEndDate}</Date>}
           </ListItem>
         );
@@ -106,16 +107,28 @@ const TravelList = () => {
 
 
 
-//payerId, perCost 부분 수정 필요
-
 const CostList = () => {
   const navigate = useNavigate();
 
+  const memberId = localStorage.getItem('memberId');
+
   const [costList, setCostList] = useState([
-    { payerId: "카리나", perCost: "+40,000원" },
-    { payerId: "윈터", perCost: "-3,300원" },
-    { payerId: "장원영", perCost: "-3,300원" },
+    { id: "", payer: { payerId: "", payerNickName: "" }, payee: { payeeId: "", payeeNickName: "" }, perCost: "", isCompleted: false },
+    { id: "", payer: { payerId: "", payerNickName: "" }, payee: { payeeId: "", payeeNickName: "" }, perCost: "", isCompleted: false },
+    { id: "", payer: { payerId: "", payerNickName: "" }, payee: { payeeId: "", payeeNickName: "" }, perCost: "", isCompleted: false },
   ]);
+
+
+  //더미 데이터
+  //const memberId = "1";
+
+  //const [costList, setCostList] = useState([
+  //  { id: "1", payer: { payerId: "1", payerNickname: "규영" }, payee: { payeeId: "2", payeeNickname: "카리나" }, perCost: "10000", isCompleted: false },
+  //   { id: "2", payer: { payerId: "4", payerNickname: "해원" }, payee: { payeeId: "1", payeeNickname: "규영" }, perCost: "10000", isCompleted: false },
+  //  { id: "3", payer: { payerId: "3", payerNickname: "설윤" }, payee: { payeeId: "1", payeeNickname: "규영" }, perCost: "10000", isCompleted: false },
+  //]);
+
+
 
   useEffect(() => {
     const fetchCostList = async () => {
@@ -143,12 +156,18 @@ const CostList = () => {
           <NextButton />
         </ButtonBox>
       </ListHeader>
-      {costList.map((cost, index) => (
-        <CostItem key={index}>
-          <Name>{cost.payerId}</Name>
-          <Sum>{cost.perCost}</Sum>
-        </CostItem>
-      ))}
+      {costList.map((cost, index) => {
+        const isPayer = memberId === cost.payer.payerId.toString(); // memberId와 payerId 비교
+
+        return (
+          <CostItem key={index}>
+            <Name>{isPayer ? cost.payee.payeeNickName : cost.payer.payerNickName}</Name>
+            <Sum>
+              {cost.perCost ? (isPayer ? `-${cost.perCost}` : `+${cost.perCost}`) : cost.perCost}
+            </Sum>
+          </CostItem>
+        );
+      })}
     </CostBox>
   );
 };

@@ -465,37 +465,33 @@ const JoinBoxComponent = ({ joinCode, setJoinCode }) => {
 
   const handleSubmit = async () => {
     try {
-      // FormData 객체 생성
-      const formData = new FormData();
-      formData.append('joinCode', joinCode);
+      
 
-      const response = await axiosInstance.post('/trip/join', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      console.log(joinCode);
 
-      const { success, code, message } = response.data;
+      const response = await axiosInstance.post('/trip/join', {joinCode : joinCode});
 
-      if (success) {
+      if (response.data.success) {
         alert('여행에 성공적으로 참여했습니다!');
-        navigate('/tripMain');
-      } else {
-        switch (code) {
-          case "404":
-            alert(message);
-            console.error('여행 참여 실패: 해당 여행이 존재하지 않습니다.');
-            break;
-          case "400":
-            alert(message);
-            console.error('여행 참여 실패: 멤버가 이미 여행에 추가되어 있습니다.');
-            break;
-          default:
-            console.error('여행 참여 실패:', message);
-        }
+        navigate('/tripMain'); 
       }
     } catch (error) {
       console.error('네트워크 오류:', error);
+
+      const {code, message } = error.response.data;
+
+      switch (code) {
+        case "TRIP4001":
+          alert('여행 참여 실패: 해당 여행이 존재하지 않습니다.');
+          console.error('여행 참여 실패: 해당 여행이 존재하지 않습니다.');
+          break;
+        case "TRIP4002":
+          alert('여행 참여 실패: 멤버가 이미 여행에 추가되어 있습니다.');
+          console.error('여행 참여 실패: 멤버가 이미 여행에 추가되어 있습니다.');
+          break;
+        default:
+          console.error('여행 참여 실패:', message);
+      }
     }
   };
 
