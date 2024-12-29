@@ -15,7 +15,6 @@ export function TravelPictureLook(){
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
     const navigate = useNavigate();
-
     const fetchTripData=async()=>{
         try{
             //const response=await axios.get(`/trip/${tripId}`);
