@@ -1,4 +1,4 @@
-#Demoday
+## Demoday
 여행 정산 서비스 두더치(DoDutch)
 
 ## 프로젝트 소개
