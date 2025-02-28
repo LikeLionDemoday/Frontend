@@ -16,7 +16,7 @@
 - `vercel`
 
 ## 주요기능
-- 스마트 여행 생성 및 여행 공유<br><br>
+- 스마트 여행 생성 및 여행 공유
   - 여행 생성 후 qr코드를 통해 여행 크루를 초대할 수 있습니다.<br><br>
 <img width="116" alt="Image" src="https://github.com/user-attachments/assets/b55f176e-3e98-4076-a3a9-81d1efef60ad" /><br><br>
 <img width="104" alt="image" src="https://github.com/user-attachments/assets/45d211db-96d2-4048-9a5c-7ecbb553c691" /><br><br>
