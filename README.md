@@ -17,12 +17,15 @@
 
 ## 주요기능
 - 스마트 여행 생성 및 여행 공유<br><br>
+  -여행 생성 후 qr코드를 통해 여행 크루를 초대할 수 있습니다.<br><br>
 <img width="116" alt="Image" src="https://github.com/user-attachments/assets/b55f176e-3e98-4076-a3a9-81d1efef60ad" /><br><br>
 <img width="104" alt="image" src="https://github.com/user-attachments/assets/45d211db-96d2-4048-9a5c-7ecbb553c691" /><br><br>
 
-- 여행 기록 및 지출 관리<br><br>
+- 여행 기록 및 지출 관리
+  - 지출 내역 및 사진을 함께 기록하여 추억을 남길 수 있습니다.<br><br>
 <img width="114" alt="Image" src="https://github.com/user-attachments/assets/b1306517-536c-4cbb-b57d-8be1eca42be7" /><br><br>
 <img width="108" alt="Image" src="https://github.com/user-attachments/assets/9c5596e8-b1ec-43d4-8ee4-23456fa3e7f8" /><br><br>
 <img width="108" alt="Image" src="https://github.com/user-attachments/assets/c673d4a5-acf7-4625-bb9e-b1d46e73538d" /><br><br>
-- 자동 정산 및 송금<br><br>
+- 자동 정산 및 송금
+  -내가 어느 여행자에게 얼마를 보내줘야 하는지를 자동으로 정산해줍니다.
 <img width="106" alt="Image" src="https://github.com/user-attachments/assets/466a2742-451c-4416-aa78-5ee4a387a648" />
