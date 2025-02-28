@@ -27,5 +27,5 @@
 <img width="108" alt="Image" src="https://github.com/user-attachments/assets/9c5596e8-b1ec-43d4-8ee4-23456fa3e7f8" /><br><br>
 <img width="108" alt="Image" src="https://github.com/user-attachments/assets/c673d4a5-acf7-4625-bb9e-b1d46e73538d" /><br><br>
 - 자동 정산 및 송금
-  -내가 어느 여행자에게 얼마를 보내줘야 하는지를 자동으로 정산해줍니다.
+  - 내가 어느 여행자에게 얼마를 보내줘야 하는지를 자동으로 정산해줍니다.<br><br>
 <img width="106" alt="Image" src="https://github.com/user-attachments/assets/466a2742-451c-4416-aa78-5ee4a387a648" />
